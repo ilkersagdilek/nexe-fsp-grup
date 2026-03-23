@@ -2,236 +2,287 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>NEXE FSP — Grup Hazırlayıcı</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/logo.png">
 <meta name="theme-color" content="#1B2C48">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f0f0;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:16px}
-.app{background:#1B2C48;border-radius:14px;overflow:hidden;width:100%;max-width:600px;box-shadow:0 4px 24px rgba(0,0,0,.18)}
-.hdr{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(42,183,177,.2)}
-.hdr img{width:36px;height:36px;border-radius:8px;object-fit:cover}
-.hdr-t{font-size:15px;font-weight:600;color:#FFFFF0}
-.hdr-s{font-size:11px;color:rgba(255,255,240,.45);margin-top:2px}
-.tabs{display:flex;padding:0 20px;border-bottom:1px solid rgba(42,183,177,.15)}
-.tb{background:transparent;border:none;border-bottom:2px solid transparent;padding:12px 16px;font-size:13px;font-weight:500;color:rgba(255,255,240,.45);cursor:pointer}
-.tb.active{color:#2AB7B1;border-bottom:2px solid #2AB7B1}
-.body{background:#FFFFF0;padding:20px}
-.sec{display:none}.sec.active{display:block}
-.dz{border:1.5px dashed rgba(42,183,177,.4);border-radius:10px;padding:24px;text-align:center;cursor:pointer;margin-bottom:16px}
-.dz:hover{border-color:#2AB7B1;background:rgba(42,183,177,.05)}
-.dz p{color:#1B2C48;font-size:14px;margin:6px 0 0}
-.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.sf{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.sc{background:#1B2C48;border-radius:8px;padding:10px;text-align:center}
-.sc-n{font-size:20px;font-weight:600;color:#2AB7B1}
-.sc-l{font-size:10px;color:rgba(255,255,240,.55);margin-top:3px}
-.sl{background:rgba(27,44,72,.07);border:0.5px solid rgba(27,44,72,.1);border-radius:8px;padding:10px;text-align:center;min-width:80px;flex:1}
-.sl-n{font-size:20px;font-weight:600;color:#1B2C48;margin-bottom:4px}
-.sl-b{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;display:inline-block}
-.slbl{font-size:11px;font-weight:600;color:rgba(27,44,72,.4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
-.pc{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:0.5px solid rgba(27,44,72,.1);border-radius:8px;margin-bottom:6px;background:white}
-.pl{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.pn{font-size:12px;color:rgba(27,44,72,.3);min-width:20px;flex-shrink:0}
-.pt{font-size:13px;color:rgba(27,44,72,.55);font-family:monospace}
-.pname{font-size:11px;color:rgba(27,44,72,.4);margin-top:2px}
-.pb{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.bc{font-size:12px;padding:5px 10px;background:transparent;border:0.5px solid rgba(42,183,177,.4);color:#2AB7B1;border-radius:6px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px}
-.bc:hover{background:rgba(42,183,177,.08)}
-.bc.ok{color:#1a9e97;border-color:#1a9e97}
-.wb{padding:6px 7px;background:transparent;border:0.5px solid rgba(37,211,102,.4);border-radius:6px;cursor:pointer;display:flex;align-items:center;text-decoration:none}
-.wb:hover{background:rgba(37,211,102,.08)}
-.lbl{font-size:13px;font-weight:500;color:#1B2C48;margin-bottom:8px}
-.hrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.bs{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(27,44,72,.18);color:#1B2C48;border-radius:6px;cursor:pointer}
-textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px solid rgba(27,44,72,.12);border-radius:8px;padding:10px;resize:vertical;color:#1B2C48;font-family:inherit}
-.brow{display:flex;justify-content:flex-end;gap:10px;margin-top:4px}
-.ba{font-size:13px;padding:9px 20px;background:#2AB7B1;border:none;color:#1B2C48;font-weight:600;border-radius:8px;cursor:pointer}
-.ba:hover{background:#24a39e}
-.ba.sb{background:transparent;border:0.5px solid rgba(27,44,72,.2);color:#1B2C48}
-.ba.sb:hover{background:rgba(27,44,72,.05)}
-.ai{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:0.5px solid rgba(27,44,72,.1);border-radius:8px;margin-bottom:8px;background:white}
-.ail{flex:1;cursor:pointer}
-.at{font-size:14px;font-weight:500;color:#1B2C48}
-.am{font-size:12px;color:rgba(27,44,72,.45);margin-top:3px}
-.aib{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.db{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(220,53,69,.3);color:#dc3545;border-radius:6px;cursor:pointer}
-.db:hover{background:rgba(220,53,69,.06)}
-.emp{font-size:14px;color:rgba(27,44,72,.35);text-align:center;padding:2rem 0}
-.toast{padding:8px 16px;border-radius:8px;font-size:13px;text-align:center;margin-top:12px;display:none}
-.toast.s{background:#1B2C48;color:#2AB7B1;border:0.5px solid #2AB7B1}
-.toast.e{background:#fff0f0;color:#dc3545;border:0.5px solid rgba(220,53,69,.3)}
-.ld{text-align:center;padding:16px;color:rgba(27,44,72,.4);font-size:13px}
-.bc2{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(107,91,149,.3);color:#6B5B95;border-radius:6px;cursor:pointer}
-.sb2{background:rgba(42,183,177,.08);border:0.5px solid rgba(42,183,177,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#0f6e56}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f0f0;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:16px;}
+.app{background:#1B2C48;border-radius:14px;overflow:hidden;width:100%;max-width:600px;box-shadow:0 4px 24px rgba(0,0,0,0.18);}
+.app-header{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(42,183,177,0.2);}
+.app-header img{width:36px;height:36px;border-radius:8px;object-fit:cover;}
+.app-header-title{font-size:15px;font-weight:600;color:#FFFFF0;}
+.app-header-sub{font-size:11px;color:rgba(255,255,240,0.45);margin-top:2px;}
+.tab-bar{display:flex;padding:0 20px;border-bottom:1px solid rgba(42,183,177,0.15);}
+.tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;padding:12px 16px;font-size:13px;font-weight:500;color:rgba(255,255,240,0.45);cursor:pointer;}
+.tab-btn.active{color:#2AB7B1;border-bottom:2px solid #2AB7B1;}
+.body{background:#FFFFF0;padding:20px;}
+.sec{display:none;}.sec.active{display:block;}
+.dz{border:1.5px dashed rgba(42,183,177,0.4);border-radius:10px;padding:24px;text-align:center;cursor:pointer;margin-bottom:16px;}
+.dz:hover{border-color:#2AB7B1;background:rgba(42,183,177,0.05);}
+.dz p{color:#1B2C48;font-size:14px;margin:6px 0 0;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.stats-grid2{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.sc{background:#1B2C48;border-radius:8px;padding:10px;text-align:center;}
+.sc-n{font-size:20px;font-weight:600;color:#2AB7B1;}
+.sc-l{font-size:10px;color:rgba(255,255,240,0.55);margin-top:3px;line-height:1.3;}
+.sc.lang{background:rgba(27,44,72,0.08);border:0.5px solid rgba(27,44,72,0.12);}
+.sc.lang .sc-n{color:#6B5B95;font-size:18px;}
+.sc.lang .sc-l{color:rgba(27,44,72,0.5);}
+.section-lbl{font-size:11px;font-weight:600;color:rgba(27,44,72,0.4);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;}
+.info{background:rgba(107,91,149,0.1);border:0.5px solid rgba(107,91,149,0.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:#6B5B95;line-height:1.5;}
+.pc{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;margin-bottom:6px;background:white;}
+.pc-left{display:flex;align-items:center;gap:10px;}
+.pn{font-size:12px;color:rgba(27,44,72,0.3);min-width:20px;}
+.pm{font-size:14px;font-weight:500;color:#1B2C48;}
+.pt{font-size:12px;color:rgba(27,44,72,0.45);font-family:monospace;margin-top:1px;}
+.bc{font-size:12px;padding:5px 12px;background:transparent;border:0.5px solid rgba(42,183,177,0.4);color:#2AB7B1;border-radius:6px;cursor:pointer;white-space:nowrap;}
+.bc:hover{background:rgba(42,183,177,0.08);}
+.bc.ok{color:#1a9e97;border-color:#1a9e97;}
+.lbl{font-size:13px;font-weight:500;color:#1B2C48;margin-bottom:8px;}
+.hrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.bs{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(27,44,72,0.18);color:#1B2C48;border-radius:6px;cursor:pointer;}
+textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px solid rgba(27,44,72,0.12);border-radius:8px;padding:10px;resize:vertical;color:#1B2C48;font-family:inherit;}
+.btn-row{display:flex;justify-content:flex-end;gap:10px;margin-top:4px;}
+.ba{font-size:13px;padding:9px 20px;background:#2AB7B1;border:none;color:#1B2C48;font-weight:600;border-radius:8px;cursor:pointer;}
+.ba:hover{background:#24a39e;}
+.ba.sb{background:transparent;border:0.5px solid rgba(27,44,72,0.2);color:#1B2C48;}
+.ba.sb:hover{background:rgba(27,44,72,0.05);}
+.ai{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;margin-bottom:8px;background:white;}
+.ai-left{flex:1;cursor:pointer;}
+.at{font-size:14px;font-weight:500;color:#1B2C48;}
+.am{font-size:12px;color:rgba(27,44,72,0.45);margin-top:3px;}
+.ai-btns{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.del-btn{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(220,53,69,0.3);color:#dc3545;border-radius:6px;cursor:pointer;}
+.del-btn:hover{background:rgba(220,53,69,0.06);}
+.emp{font-size:14px;color:rgba(27,44,72,0.35);text-align:center;padding:2rem 0;}
+.toast{padding:8px 16px;border-radius:8px;font-size:13px;text-align:center;margin-top:12px;display:none;}
+.toast.s{background:#1B2C48;color:#2AB7B1;border:0.5px solid #2AB7B1;}
+.toast.e{background:#fff0f0;color:#dc3545;border:0.5px solid rgba(220,53,69,0.3);}
+.loading{text-align:center;padding:16px;color:rgba(27,44,72,0.4);font-size:13px;}
+.bclose{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(107,91,149,0.3);color:#6B5B95;border-radius:6px;cursor:pointer;}
+.shared-banner{background:rgba(42,183,177,0.08);border:0.5px solid rgba(42,183,177,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#0f6e56;}
 </style>
 </head>
 <body>
 <div class="app">
-<div class="hdr">
-  <img src="/logo.png" alt="" onerror="this.style.display='none'">
-  <div><div class="hdr-t">NEXE FSP — Grup Hazırlayıcı</div><div class="hdr-s">Haftalık Sunum Katılımcı Yönetimi</div></div>
-</div>
-<div class="tabs">
-  <button class="tb active" onclick="showTab('bh',this)">Bu Hafta</button>
-  <button class="tb" onclick="showTab('ar',this)">Arşiv</button>
-</div>
-<div class="body">
-<div id="bh" class="sec active">
-  <div id="lw" class="ld" style="display:none">Yükleniyor...</div>
-  <div id="sv" style="display:none"></div>
-  <div class="dz" id="dz" onclick="document.getElementById('fi').click()">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-    <p>CSV dosyasını buraya sürükle veya tıkla</p>
-    <input type="file" id="fi" accept=".csv" style="display:none">
-  </div>
-  <div id="res" style="display:none">
-    <div id="sw"></div>
-    <div id="cd" style="margin-bottom:16px"></div>
-    <div style="margin-bottom:16px">
-      <div class="hrow"><p class="lbl">Davet mesajı</p><button class="bs" onclick="cp('mg')">Kopyala</button></div>
-      <textarea id="mg" rows="10"></textarea>
-    </div>
-    <div class="brow">
-      <button class="ba sb" onclick="archC(this)">Arşive gönder</button>
-      <button class="ba" onclick="saveC(this)">Kaydet ve Paylaş</button>
+  <div class="app-header">
+    <img src="/logo.png" alt="" onerror="this.style.display='none'">
+    <div>
+      <div class="app-header-title">NEXE FSP — Grup Hazırlayıcı</div>
+      <div class="app-header-sub">Haftalık Sunum Katılımcı Yönetimi</div>
     </div>
   </div>
-</div>
-<div id="ar" class="sec"><div id="al"></div><div id="ad" style="display:none;margin-top:12px"></div></div>
-<div class="toast" id="toast"></div>
-</div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('bh',this)">Bu Hafta</button>
+    <button class="tab-btn" onclick="showTab('ar',this)">Arşiv</button>
+  </div>
+  <div class="body">
+    <div id="bh" class="sec active">
+      <div id="loadingWrap" class="loading" style="display:none">Yükleniyor...</div>
+      <div id="sharedView" style="display:none"></div>
+      <div class="dz" id="dz" onclick="document.getElementById('fi').click()">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p>CSV dosyasını buraya sürükle veya tıkla</p>
+        <input type="file" id="fi" accept=".csv" style="display:none">
+      </div>
+      <div id="res" style="display:none;">
+        <div id="statsWrap"></div>
+        <div class="info">WhatsApp → Yeni grup → Üye ekle → Arama kutusuna yapıştır → seç → sonraki kişiye geç</div>
+        <div id="cards" style="margin-bottom:16px;"></div>
+        <div style="margin-bottom:16px;">
+          <div class="hrow"><p class="lbl">Davet mesajı</p><button class="bs" onclick="cp('msg')">Kopyala</button></div>
+          <textarea id="msg" rows="10"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="ba sb" onclick="archiveCurrent(this)">Arşive gönder</button>
+          <button class="ba" onclick="saveCurrent(this)">Kaydet ve Paylaş</button>
+        </div>
+      </div>
+    </div>
+    <div id="ar" class="sec">
+      <div id="al"></div>
+      <div id="ad" style="display:none;margin-top:12px;"></div>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
 </div>
 <script>
-const DAVET="Herkese Merhaba\n\nLütfen sunuma katılmadan önce mümkünse dikkatinizi verebileceğiniz bir 15 dakika ayırarak tanıtım videomuzu izleyiniz!\n\nSunumu videoda ana hatlarıyla aktarılan program çerçevesinde soru cevap etkinliği olarak gerçekleştireceğiz.\n\nhttps://nexevita.com/tanitim\n\nTıp Doktorları, Diş Hekimleri ve Eczacılar için Almanya'da devlet destekli FSP Programı konusunda yarın akşam saat 21:00'de başlayacak olan toplantıdan önce Zoom bağlantısını yine bu gruptan paylaşacağız.\n\nYarın akşam görüşmek üzere.";
-const SRENK={'Yeni Başlangıç':'#3B82F6','A1':'#22C55E','A2':'#CA8A04','B1':'#F97316','B2':'#EF4444','C1':'#8B5CF6','C2':'#EC4899'};
+const DAVET=`Herkese Merhaba
+
+Lütfen sunuma katılmadan önce mümkünse dikkatinizi verebileceğiniz bir 15 dakika ayırarak tanıtım videomuzu izleyiniz!
+
+Sunumu videoda ana hatlarıyla aktarılan program çerçevesinde soru cevap etkinliği olarak gerçekleştireceğiz.
+
+https://nexevita.com/tanitim
+
+Tıp Doktorları, Diş Hekimleri ve Eczacılar için Almanya'da devlet destekli FSP Programı konusunda yarın akşam saat 21:00'de başlayacak olan toplantıdan önce Zoom bağlantısını yine bu gruptan paylaşacağız.
+
+Yarın akşam görüşmek üzere.`;
+
 let cR=[],cF='';
 
-function tc(s){if(!s)return '';const m={'ı':'ı','i':'i','ş':'ş','ğ':'ğ','ö':'ö','ü':'ü','ç':'ç'};return s.toLowerCase().replace(/(?:^|[s-])(S)/g,(a,b)=>a.slice(0,-1)+b.toUpperCase());}
+function titleCase(s){
+  return (s||'').toLowerCase().replace(/(?:^|\s|-)\S/g,c=>c.toUpperCase());
+}
 
-async function ag(){const r=await fetch('/api/data');if(!r.ok)throw new Error('API hatası');return r.json();}
-async function ap(data,sha){const r=await fetch('/api/data',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({data,sha})});if(!r.ok)throw new Error('Kaydetme hatası');return r.json();}
+async function apiGet(){const r=await fetch('/api/data');if(!r.ok)throw new Error('API hatası');return r.json();}
+async function apiPut(data,sha){const r=await fetch('/api/data',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({data,sha})});if(!r.ok)throw new Error('Kaydetme hatası');return r.json();}
 
-function showTab(id,btn){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');if(id==='ar')rAr();}
+function showTab(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');btn.classList.add('active');
+  if(id==='ar')renderAr();
+}
 
 const dz=document.getElementById('dz'),fi=document.getElementById('fi');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#2AB7B1';});
 dz.addEventListener('dragleave',()=>dz.style.borderColor='');
-dz.addEventListener('drop',e=>{e.preventDefault();dz.style.borderColor='';const f=e.dataTransfer.files[0];if(f)lf(f);});
-fi.addEventListener('change',e=>{if(e.target.files[0])lf(e.target.files[0]);});
-function lf(f){cF=f.name;const r=new FileReader();r.onload=e=>pv(e.target.result);r.readAsText(f,'UTF-8');}
-function ct(t){return t.replace(/s/g,'').replace(/^00/,'+');}
+dz.addEventListener('drop',e=>{e.preventDefault();dz.style.borderColor='';const f=e.dataTransfer.files[0];if(f)load(f);});
+fi.addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
+function load(f){cF=f.name;const r=new FileReader();r.onload=e=>parse(e.target.result);r.readAsText(f,'UTF-8');}
+function ct(t){return t.replace(/\s/g,'').replace(/^00/,'+');}
 
-function bStats(rows){
-  const tip=rows.filter(r=>r.meslek.toLowerCase().includes('tıp')||r.meslek.toLowerCase().includes('tip')).length;
-  const dis=rows.filter(r=>r.meslek.toLowerCase().includes('diş')||r.meslek.toLowerCase().includes('dis')).length;
+function buildStats(rows){
+  // Meslekler
+  const tip=rows.filter(r=>r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip')).length;
+  const dis=rows.filter(r=>r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis')).length;
   const ecz=rows.filter(r=>r.meslek.toLowerCase().includes('ecz')).length;
-  const sOrd=['Yeni Başlangıç','A1','A2','B1','B2','C1','C2'];
-  const sC={};rows.forEach(r=>{const s=r.almanca||'';if(s)sC[s]=(sC[s]||0)+1;});
-  const sE=[...sOrd.filter(s=>sC[s]).map(s=>[s,sC[s]]),...Object.entries(sC).filter(([k])=>!sOrd.includes(k))];
-  return '<p class="slbl">Meslek Grupları</p><div class="sg" style="margin-bottom:14px"><div class="sc"><p class="sc-n">'+tip+'</p><p class="sc-l">Tıp Doktoru</p></div><div class="sc"><p class="sc-n">'+dis+'</p><p class="sc-l">Diş Hekimi</p></div><div class="sc"><p class="sc-n">'+ecz+'</p><p class="sc-l">Eczacı</p></div></div>'+(sE.length?'<p class="slbl">Almanca Seviyeleri</p><div class="sf">'+sE.map(([s,n])=>{const renk=SRENK[s]||'#888';return'<div class="sl"><p class="sl-n">'+n+'</p><span class="sl-b" style="color:'+renk+';background:'+renk+'18">'+s+'</span></div>';}).join('')+'</div>':'');
+
+  // Almanca seviyeleri
+  const seviyelar=['Yeni Başlangıç','A1','A2','B1','B2','C1','C2'];
+  const seviyeCounts={};
+  rows.forEach(r=>{
+    const s=r.almanca||'Belirtilmemiş';
+    seviyeCounts[s]=(seviyeCounts[s]||0)+1;
+  });
+  // Sıralı göster
+  const seviyeEntries=seviyelar.filter(s=>seviyeCounts[s]).map(s=>[s,seviyeCounts[s]]);
+  // Tanımsız seviyeler
+  Object.entries(seviyeCounts).forEach(([k,v])=>{if(!seviyelar.includes(k))seviyeEntries.push([k,v]);});
+
+  return `
+    <p class="section-lbl">Meslek Grupları</p>
+    <div class="stats-grid" style="margin-bottom:14px;">
+      <div class="sc"><p class="sc-n">${tip}</p><p class="sc-l">Tıp Doktoru</p></div>
+      <div class="sc"><p class="sc-n">${dis}</p><p class="sc-l">Diş Hekimi</p></div>
+      <div class="sc"><p class="sc-n">${ecz}</p><p class="sc-l">Eczacı</p></div>
+    </div>
+    <p class="section-lbl">Almanca Seviyeleri</p>
+    <div class="stats-grid2">${seviyeEntries.map(([s,n])=>`<div class="sc lang"><p class="sc-n">${n}</p><p class="sc-l">${s}</p></div>`).join('')}</div>
+  `;
 }
 
-const CPN='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-const WAI='<svg width="15" height="15" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
-
-function mkC(rows){
-  return '<p class="lbl" style="margin-bottom:10px">Katılımcılar — sırayla kopyala ('+rows.length+' kişi)</p>'
-    +rows.map((r,i)=>{
-      const tel=r.tel.replace(/'/g,"\'");
-      const wa='https://wa.me/'+r.tel.replace(/[^0-9]/g,'');
-      return'<div class="pc"><div class="pl"><span class="pn">'+(i+1)+'</span><div><p class="pt">'+r.tel+'</p><p class="pname">'+tc(r.isim)+'</p></div></div><div class="pb"><button class="bc" onclick="cs(''+tel+'',this)">'+CPN+' Kopyala</button><a class="wb" href="'+wa+'" target="_blank">'+WAI+'</a></div></div>';
-    }).join('');
+function mkCards(rows){
+  return `<p class="lbl" style="margin-bottom:10px;">Katılımcılar — sırayla kopyala (${rows.length} kişi)</p>`
+    +rows.map((r,i)=>`<div class="pc"><div class="pc-left"><span class="pn">${i+1}</span><div><p class="pm">${titleCase(r.isim)}</p><p class="pt">${r.tel}</p></div></div><button class="bc" onclick="cs('${r.tel.replace(/'/g,"\\'")}',this)">Kopyala</button></div>`).join('');
 }
 
-function pv(txt){
-  const lines=txt.trim().split('
-');
-  const h=lines[0].split(',').map(x=>x.trim().replace(/^﻿/,''));
+function parse(txt){
+  const lines=txt.trim().split('\n');
+  const h=lines[0].split(',').map(x=>x.trim().replace(/^\uFEFF/,''));
   const ii=h.findIndex(x=>x.toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
   const it=h.findIndex(x=>x.toLowerCase().includes('telefon')||x.toLowerCase().includes('tel'));
   const im=h.findIndex(x=>x.toLowerCase().includes('meslek'));
   const ia=h.findIndex(x=>x.toLowerCase().includes('almanca')||x.toLowerCase().includes('seviye'));
   cR=lines.slice(1).map(l=>{const c=l.split(',').map(x=>x.trim());return{isim:c[ii]||'',tel:ct(c[it]||''),meslek:c[im]||'',almanca:ia>=0?c[ia]||'':''};}).filter(r=>r.tel&&r.tel.length>5);
-  document.getElementById('sw').innerHTML=bStats(cR);
-  document.getElementById('cd').innerHTML=mkC(cR);
-  document.getElementById('mg').value=DAVET;
+
+  document.getElementById('statsWrap').innerHTML=buildStats(cR);
+  document.getElementById('cards').innerHTML=mkCards(cR);
+  document.getElementById('msg').value=DAVET;
   document.getElementById('res').style.display='block';
-  dz.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><p style="color:#2AB7B1;margin:6px 0 0">'+cR.length+' kayıt yüklendi</p><p style="font-size:12px;color:rgba(27,44,72,.4);margin:3px 0 0">Yeni dosya için tıkla</p><input type="file" id="fi2" accept=".csv" style="display:none">';
-  document.getElementById('fi2').addEventListener('change',e=>{if(e.target.files[0])lf(e.target.files[0]);});
+  dz.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><p style="color:#2AB7B1;margin:6px 0 0;">${cR.length} kayıt yüklendi</p><p style="font-size:12px;color:rgba(27,44,72,0.4);margin:3px 0 0;">Yeni dosya için tıkla</p><input type="file" id="fi2" accept=".csv" style="display:none">`;
+  document.getElementById('fi2').addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
   dz.onclick=()=>document.getElementById('fi2').click();
 }
 
-async function saveC(btn){
-  if(!cR.length)return;btn.textContent='Kaydediliyor...';btn.disabled=true;
-  try{const d=await ag();d.current={tarih:new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR};await ap(d,d._sha);toast('Kaydedildi — herkes görebilir','s');}
-  catch(e){toast('Hata: '+e.message,'e');}
+async function saveCurrent(btn){
+  if(!cR.length)return;
+  btn.textContent='Kaydediliyor...';btn.disabled=true;
+  try{
+    const d=await apiGet();
+    d.current={tarih:new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR};
+    await apiPut(d,d._sha);
+    toast('Kaydedildi — herkes görebilir','s');
+  }catch(e){toast('Hata: '+e.message,'e');}
   btn.textContent='Kaydet ve Paylaş';btn.disabled=false;
 }
 
-async function archC(btn){
-  if(!cR.length)return;btn.textContent='Gönderiliyor...';btn.disabled=true;
+async function archiveCurrent(btn){
+  if(!cR.length)return;
+  btn.textContent='Gönderiliyor...';btn.disabled=true;
   try{
-    const d=await ag();d.archive=d.archive||[];
+    const d=await apiGet();
+    d.archive=d.archive||[];
     d.archive.unshift({tarih:new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR});
-    d.current=null;await ap(d,d._sha);
-    toast('Arşive gönderildi!','s');cR=[];
+    d.current=null;
+    await apiPut(d,d._sha);
+    toast('Arşive gönderildi!','s');
+    cR=[];
     document.getElementById('res').style.display='none';
-    dz.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>CSV dosyasını buraya sürükle veya tıkla</p><input type="file" id="fi3" accept=".csv" style="display:none">';
-    document.getElementById('fi3').addEventListener('change',e=>{if(e.target.files[0])lf(e.target.files[0]);});
+    dz.innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>CSV dosyasını buraya sürükle veya tıkla</p><input type="file" id="fi3" accept=".csv" style="display:none">`;
+    document.getElementById('fi3').addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
     dz.onclick=()=>document.getElementById('fi3').click();
   }catch(e){toast('Hata: '+e.message,'e');}
   btn.textContent='Arşive gönder';btn.disabled=false;
 }
 
-async function rAr(){
-  const list=document.getElementById('al');list.innerHTML='<p class="ld">Yükleniyor...</p>';document.getElementById('ad').style.display='none';
+async function renderAr(){
+  const list=document.getElementById('al');
+  list.innerHTML='<p class="loading">Yükleniyor...</p>';
+  document.getElementById('ad').style.display='none';
   try{
-    const d=await ag();const ar=d.archive||[];
+    const d=await apiGet();
+    const ar=d.archive||[];
     if(!ar.length){list.innerHTML='<p class="emp">Henüz arşivlenmiş sunum yok.</p>';return;}
     list.innerHTML=ar.map((a,i)=>{
-      const tip=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('tıp')||r.meslek.toLowerCase().includes('tip'))).length;
-      const dis=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('diş')||r.meslek.toLowerCase().includes('dis'))).length;
+      const tip=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
+      const dis=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
       const ecz=a.rows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
-      return'<div class="ai"><div class="ail" onclick="shD('+i+')"><p class="at">'+a.tarih+' sunumu</p><p class="am">'+a.rows.length+' katılımcı · '+tip+' Tıp · '+dis+' Diş · '+ecz+' Ecz.</p></div><div class="aib"><svg onclick="shD('+i+')" style="cursor:pointer;opacity:.25" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><button class="db" onclick="dAr('+i+')">Sil</button></div></div>';
+      return`<div class="ai"><div class="ai-left" onclick="showD(${i})"><p class="at">${a.tarih} sunumu</p><p class="am">${a.rows.length} katılımcı · ${tip} Tıp · ${dis} Diş · ${ecz} Ecz.</p></div><div class="ai-btns"><svg onclick="showD(${i})" style="cursor:pointer;opacity:0.25" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><button class="del-btn" onclick="delAr(${i})">Sil</button></div></div>`;
     }).join('');
   }catch(e){list.innerHTML='<p class="emp">Yüklenemedi.</p>';}
 }
 
-async function dAr(idx){
+async function delAr(idx){
   if(!confirm('Bu kayıt silinsin mi?'))return;
-  try{const d=await ag();d.archive.splice(idx,1);await ap(d,d._sha);toast('Silindi.','s');rAr();}
-  catch(e){toast('Hata: '+e.message,'e');}
+  try{
+    const d=await apiGet();
+    d.archive.splice(idx,1);
+    await apiPut(d,d._sha);
+    toast('Silindi.','s');renderAr();
+  }catch(e){toast('Hata: '+e.message,'e');}
 }
 
-async function shD(i){
-  try{const d=await ag();const a=d.archive[i];const det=document.getElementById('ad');det.style.display='block';det.innerHTML='<div class="hrow" style="margin-bottom:12px"><p style="font-size:14px;font-weight:500;color:#1B2C48">'+a.tarih+' — '+a.rows.length+' katılımcı</p><button class="bc2" onclick="document.getElementById('ad').style.display='none'">Kapat</button></div>'+mkC(a.rows);}
-  catch(e){}
+async function showD(i){
+  try{
+    const d=await apiGet();
+    const a=d.archive[i];
+    const det=document.getElementById('ad');det.style.display='block';
+    det.innerHTML=`<div class="hrow" style="margin-bottom:12px;"><p style="font-size:14px;font-weight:500;color:#1B2C48;">${a.tarih} — ${a.rows.length} katılımcı</p><button class="bclose" onclick="document.getElementById('ad').style.display='none'">Kapat</button></div>`+mkCards(a.rows);
+  }catch(e){}
 }
 
-function cs(tel,btn){
-  navigator.clipboard.writeText(tel).then(()=>{
-    const o=btn.innerHTML;
-    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Kopyalandı!';
-    btn.classList.add('ok');
-    setTimeout(()=>{btn.innerHTML=o;btn.classList.remove('ok');},1200);
-  });
-}
+function cs(tel,btn){navigator.clipboard.writeText(tel).then(()=>{const o=btn.textContent;btn.textContent='Kopyalandı!';btn.classList.add('ok');setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1200);});}
 function cp(id){navigator.clipboard.writeText(document.getElementById(id).value).then(()=>toast('Kopyalandı!','s'));}
 function toast(m,t){const el=document.getElementById('toast');el.textContent=m;el.className='toast '+(t||'s');el.style.display='block';setTimeout(()=>el.style.display='none',2500);}
 
 (async()=>{
-  const w=document.getElementById('lw');w.style.display='block';
+  const wrap=document.getElementById('loadingWrap');
+  wrap.style.display='block';
   try{
-    const d=await ag();w.style.display='none';
+    const d=await apiGet();
+    wrap.style.display='none';
     if(d.current&&d.current.rows&&d.current.rows.length){
-      const sv=document.getElementById('sv');const rows=d.current.rows;
-      sv.innerHTML='<div class="sb2">'+d.current.tarih+' tarihli kaydedilmiş liste — '+rows.length+' katılımcı</div>'+bStats(rows)+mkC(rows);
+      const sv=document.getElementById('sharedView');
+      const rows=d.current.rows;
+      sv.innerHTML=`<div class="shared-banner">${d.current.tarih} tarihli kaydedilmiş liste — ${rows.length} katılımcı</div>`+buildStats(rows)+mkCards(rows);
       sv.style.display='block';
     }
-  }catch(e){document.getElementById('lw').style.display='none';}
+  }catch(e){wrap.style.display='none';}
 })();
 </script>
 </body>
