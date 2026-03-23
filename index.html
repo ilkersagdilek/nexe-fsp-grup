@@ -82,11 +82,11 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
 <div id="bh" class="sec active">
   <div id="lw" class="ld" style="display:none">Yükleniyor...</div>
   <div id="sv" style="display:none"></div>
-  <div class="dz" id="dz" onclick="document.getElementById('fi').click()">
+  <label class="dz" id="dz" for="fi">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
     <p>CSV dosyasını buraya sürükle veya tıkla</p>
     <input type="file" id="fi" accept=".csv" style="display:none">
-  </div>
+  </label>
   <div id="res" style="display:none">
     <div id="sw"></div>
     <div id="cd" style="margin-bottom:16px"></div>
