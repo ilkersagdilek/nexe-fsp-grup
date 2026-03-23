@@ -20,7 +20,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tb.active{color:#2AB7B1;border-bottom:2px solid #2AB7B1}
 .body{background:#FFFFF0;padding:20px}
 .sec{display:none}.sec.active{display:block}
-.dz{border:1.5px dashed rgba(42,183,177,.4);border-radius:10px;padding:24px;text-align:center;cursor:pointer;margin-bottom:16px}
+.dz{display:block;border:1.5px dashed rgba(42,183,177,.4);border-radius:10px;padding:24px;text-align:center;cursor:pointer;margin-bottom:16px}
 .dz:hover{border-color:#2AB7B1;background:rgba(42,183,177,.05)}
 .dz p{color:#1B2C48;font-size:14px;margin:6px 0 0}
 .sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
@@ -117,7 +117,7 @@ async function ap(data,sha){const r=await fetch('/api/data',{method:'PUT',header
 function showTab(id,btn){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');if(id==='ar')rAr();}
 
 const dz=document.getElementById('dz'),fi=document.getElementById('fi');
-dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#2AB7B1';});
+dz.addEventListener('dragover',e=>{e.preventDefault();e.stopPropagation();dz.style.borderColor='#2AB7B1';});
 dz.addEventListener('dragleave',()=>dz.style.borderColor='');
 dz.addEventListener('drop',e=>{e.preventDefault();dz.style.borderColor='';const f=e.dataTransfer.files[0];if(f)lf(f);});
 fi.addEventListener('change',e=>{if(e.target.files[0])lf(e.target.files[0]);});
