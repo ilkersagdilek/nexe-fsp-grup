@@ -199,9 +199,7 @@ function parse(txt){
   document.getElementById('cards').innerHTML=mkCards(cR);
   document.getElementById('msg').value=DAVET;
   document.getElementById('res').style.display='block';
-  dz.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><p style="color:#2AB7B1;margin:6px 0 0;">${cR.length} kayıt yüklendi</p><p style="font-size:12px;color:rgba(27,44,72,0.4);margin:3px 0 0;">Yeni dosya için tıkla</p><input type="file" id="fi2" accept=".csv" style="display:none">`;
-  document.getElementById('fi2').addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
-  dz.onclick=()=>document.getElementById('fi2').click();
+  dz.style.display='none';
 }
 
 async function saveCurrent(btn){
