@@ -172,13 +172,13 @@ function buildStats(rows){
       <div class="sc"><p class="sc-n">${ecz}</p><p class="sc-l">Eczacı</p></div>
     </div>
     <p class="section-lbl">Almanca Seviyeleri</p>
-    <div class="stats-grid2">${seviyeEntries.map(([s,n])=>`<div class="sc lang"><p class="sc-n">${n}</p><p class="sc-l">${s}</p></div>`).join('')}</div>
+    <div class="stats-grid2">${seviyeEntries.map(([s,n])=>`<div class="sc lang"><p class="sc-n">${n}</p><p class="sc-l" style="color:${{'Yeni Başlangıç':'#3B82F6','A1':'#22C55E','A2':'#CA8A04','B1':'#F97316','B2':'#EF4444','C1':'#8B5CF6','C2':'#EC4899'}[s]||'#888'};font-weight:600">${s}</p></div>`).join('')}</div>
   `;
 }
 
 function mkCards(rows){
   return `<p class="lbl" style="margin-bottom:10px;">Katılımcılar — sırayla kopyala (${rows.length} kişi)</p>`
-    +rows.map((r,i)=>`<div class="pc"><div class="pc-left"><span class="pn">${i+1}</span><div><p class="pm">${titleCase(r.isim)}</p><p class="pt">${r.tel}</p></div></div><button class="bc" onclick="cs('${r.tel.replace(/'/g,"\\'")}',this)">Kopyala</button></div>`).join('');
+    +rows.map((r,i)=>`<div class="pc"><div class="pc-left"><span class="pn">${i+1}</span><div><p class="pt">${r.tel}</p><p style="font-size:11px;color:rgba(27,44,72,0.4);margin-top:2px">${titleCase(r.isim)}</p></div></div><button class="bc" onclick="cs('${r.tel.replace(/'/g,"\\'")}',this)">Kopyala</button></div>`).join('');
 }
 
 function parse(txt){
