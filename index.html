@@ -10,7 +10,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f0f0;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:16px;}
-.app{background:#1B2C48;border-radius:14px;overflow:hidden;width:100%;max-width:580px;box-shadow:0 4px 24px rgba(0,0,0,0.18);}
+.app{background:#1B2C48;border-radius:14px;overflow:hidden;width:100%;max-width:600px;box-shadow:0 4px 24px rgba(0,0,0,0.18);}
 .app-header{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(42,183,177,0.2);}
 .app-header img{width:36px;height:36px;border-radius:8px;object-fit:cover;}
 .app-header-title{font-size:15px;font-weight:600;color:#FFFFF0;}
@@ -23,17 +23,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dz{border:1.5px dashed rgba(42,183,177,0.4);border-radius:10px;padding:24px;text-align:center;cursor:pointer;margin-bottom:16px;}
 .dz:hover{border-color:#2AB7B1;background:rgba(42,183,177,0.05);}
 .dz p{color:#1B2C48;font-size:14px;margin:6px 0 0;}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-.sc{background:#1B2C48;border-radius:8px;padding:12px;text-align:center;}
-.sc-n{font-size:22px;font-weight:600;color:#2AB7B1;}
-.sc-l{font-size:11px;color:rgba(255,255,240,0.55);margin-top:4px;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.stats-grid2{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.sc{background:#1B2C48;border-radius:8px;padding:10px;text-align:center;}
+.sc-n{font-size:20px;font-weight:600;color:#2AB7B1;}
+.sc-l{font-size:10px;color:rgba(255,255,240,0.55);margin-top:3px;line-height:1.3;}
+.sc.lang{background:rgba(27,44,72,0.08);border:0.5px solid rgba(27,44,72,0.12);}
+.sc.lang .sc-n{color:#6B5B95;font-size:18px;}
+.sc.lang .sc-l{color:rgba(27,44,72,0.5);}
+.section-lbl{font-size:11px;font-weight:600;color:rgba(27,44,72,0.4);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;}
 .info{background:rgba(107,91,149,0.1);border:0.5px solid rgba(107,91,149,0.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:#6B5B95;line-height:1.5;}
 .pc{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;margin-bottom:6px;background:white;}
 .pc-left{display:flex;align-items:center;gap:10px;}
 .pn{font-size:12px;color:rgba(27,44,72,0.3);min-width:20px;}
 .pm{font-size:14px;font-weight:500;color:#1B2C48;}
 .pt{font-size:12px;color:rgba(27,44,72,0.45);font-family:monospace;margin-top:1px;}
-.pa{display:inline-block;font-size:11px;background:rgba(42,183,177,0.12);color:#0f6e56;border-radius:4px;padding:1px 6px;margin-top:3px;}
 .bc{font-size:12px;padding:5px 12px;background:transparent;border:0.5px solid rgba(42,183,177,0.4);color:#2AB7B1;border-radius:6px;cursor:pointer;white-space:nowrap;}
 .bc:hover{background:rgba(42,183,177,0.08);}
 .bc.ok{color:#1a9e97;border-color:#1a9e97;}
@@ -85,7 +89,7 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
         <input type="file" id="fi" accept=".csv" style="display:none">
       </div>
       <div id="res" style="display:none;">
-        <div class="stats" id="stats"></div>
+        <div id="statsWrap"></div>
         <div class="info">WhatsApp → Yeni grup → Üye ekle → Arama kutusuna yapıştır → seç → sonraki kişiye geç</div>
         <div id="cards" style="margin-bottom:16px;"></div>
         <div style="margin-bottom:16px;">
@@ -120,16 +124,12 @@ Yarın akşam görüşmek üzere.`;
 
 let cR=[],cF='';
 
-async function apiGet(){
-  const r=await fetch('/api/data');
-  if(!r.ok)throw new Error('API hatası');
-  return r.json();
+function titleCase(s){
+  return (s||'').toLowerCase().replace(/(?:^|\s|-)\S/g,c=>c.toUpperCase());
 }
-async function apiPut(data,sha){
-  const r=await fetch('/api/data',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({data,sha})});
-  if(!r.ok)throw new Error('Kaydetme hatası');
-  return r.json();
-}
+
+async function apiGet(){const r=await fetch('/api/data');if(!r.ok)throw new Error('API hatası');return r.json();}
+async function apiPut(data,sha){const r=await fetch('/api/data',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({data,sha})});if(!r.ok)throw new Error('Kaydetme hatası');return r.json();}
 
 function showTab(id,btn){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
@@ -144,10 +144,41 @@ dz.addEventListener('dragleave',()=>dz.style.borderColor='');
 dz.addEventListener('drop',e=>{e.preventDefault();dz.style.borderColor='';const f=e.dataTransfer.files[0];if(f)load(f);});
 fi.addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
 function load(f){cF=f.name;const r=new FileReader();r.onload=e=>parse(e.target.result);r.readAsText(f,'UTF-8');}
-function ct(t){return t.replace(/s/g,'').replace(/^00/,'+');}
+function ct(t){return t.replace(/\s/g,'').replace(/^00/,'+');}
+
+function buildStats(rows){
+  // Meslekler
+  const tip=rows.filter(r=>r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip')).length;
+  const dis=rows.filter(r=>r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis')).length;
+  const ecz=rows.filter(r=>r.meslek.toLowerCase().includes('ecz')).length;
+
+  // Almanca seviyeleri
+  const seviyelar=['Yeni Başlangıç','A1','A2','B1','B2','C1','C2'];
+  const seviyeCounts={};
+  rows.forEach(r=>{
+    const s=r.almanca||'Belirtilmemiş';
+    seviyeCounts[s]=(seviyeCounts[s]||0)+1;
+  });
+  // Sıralı göster
+  const seviyeEntries=seviyelar.filter(s=>seviyeCounts[s]).map(s=>[s,seviyeCounts[s]]);
+  // Tanımsız seviyeler
+  Object.entries(seviyeCounts).forEach(([k,v])=>{if(!seviyelar.includes(k))seviyeEntries.push([k,v]);});
+
+  return `
+    <p class="section-lbl">Meslek Grupları</p>
+    <div class="stats-grid" style="margin-bottom:14px;">
+      <div class="sc"><p class="sc-n">${tip}</p><p class="sc-l">Tıp Doktoru</p></div>
+      <div class="sc"><p class="sc-n">${dis}</p><p class="sc-l">Diş Hekimi</p></div>
+      <div class="sc"><p class="sc-n">${ecz}</p><p class="sc-l">Eczacı</p></div>
+    </div>
+    <p class="section-lbl">Almanca Seviyeleri</p>
+    <div class="stats-grid2">${seviyeEntries.map(([s,n])=>`<div class="sc lang"><p class="sc-n">${n}</p><p class="sc-l">${s}</p></div>`).join('')}</div>
+  `;
+}
 
 function mkCards(rows){
-  return rows.map((r,i)=>`<div class="pc"><div class="pc-left"><span class="pn">${i+1}</span><div><p class="pm">${r.isim}</p><p class="pt">${r.tel}</p>${r.almanca?'<span class="pa">'+r.almanca+'</span>':''}</div></div><button class="bc" onclick="cs('${r.tel.replace(/'/g,"\\'")}',this)">Kopyala</button></div>`).join('');
+  return `<p class="lbl" style="margin-bottom:10px;">Katılımcılar — sırayla kopyala (${rows.length} kişi)</p>`
+    +rows.map((r,i)=>`<div class="pc"><div class="pc-left"><span class="pn">${i+1}</span><div><p class="pm">${titleCase(r.isim)}</p><p class="pt">${r.tel}</p></div></div><button class="bc" onclick="cs('${r.tel.replace(/'/g,"\\'")}',this)">Kopyala</button></div>`).join('');
 }
 
 function parse(txt){
@@ -158,11 +189,9 @@ function parse(txt){
   const im=h.findIndex(x=>x.toLowerCase().includes('meslek'));
   const ia=h.findIndex(x=>x.toLowerCase().includes('almanca')||x.toLowerCase().includes('seviye'));
   cR=lines.slice(1).map(l=>{const c=l.split(',').map(x=>x.trim());return{isim:c[ii]||'',tel:ct(c[it]||''),meslek:c[im]||'',almanca:ia>=0?c[ia]||'':''};}).filter(r=>r.tel&&r.tel.length>5);
-  const tip=cR.filter(r=>r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip')).length;
-  const dis=cR.filter(r=>r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis')).length;
-  const ecz=cR.filter(r=>r.meslek.toLowerCase().includes('ecz')).length;
-  document.getElementById('stats').innerHTML=`<div class="sc"><p class="sc-n">${cR.length}</p><p class="sc-l">Toplam kayıt</p></div><div class="sc"><p class="sc-n">${tip}</p><p class="sc-l">Tıp doktoru</p></div><div class="sc"><p class="sc-n">${dis+ecz}</p><p class="sc-l">Diş hek. / Ecz.</p></div>`;
-  document.getElementById('cards').innerHTML=`<p class="lbl" style="margin-bottom:10px;">Katılımcılar — sırayla kopyala (${cR.length} kişi)</p>`+mkCards(cR);
+
+  document.getElementById('statsWrap').innerHTML=buildStats(cR);
+  document.getElementById('cards').innerHTML=mkCards(cR);
   document.getElementById('msg').value=DAVET;
   document.getElementById('res').style.display='block';
   dz.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><p style="color:#2AB7B1;margin:6px 0 0;">${cR.length} kayıt yüklendi</p><p style="font-size:12px;color:rgba(27,44,72,0.4);margin:3px 0 0;">Yeni dosya için tıkla</p><input type="file" id="fi2" accept=".csv" style="display:none">`;
@@ -213,7 +242,7 @@ async function renderAr(){
       const tip=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
       const dis=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
       const ecz=a.rows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
-      return`<div class="ai"><div class="ai-left" onclick="showD(${i})"><p class="at">${a.tarih} sunumu</p><p class="am">${a.rows.length} katılımcı · ${tip} tıp · ${dis} diş · ${ecz} ecz.</p></div><div class="ai-btns"><svg onclick="showD(${i})" style="cursor:pointer;opacity:0.25" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><button class="del-btn" onclick="delAr(${i})">Sil</button></div></div>`;
+      return`<div class="ai"><div class="ai-left" onclick="showD(${i})"><p class="at">${a.tarih} sunumu</p><p class="am">${a.rows.length} katılımcı · ${tip} Tıp · ${dis} Diş · ${ecz} Ecz.</p></div><div class="ai-btns"><svg onclick="showD(${i})" style="cursor:pointer;opacity:0.25" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><button class="del-btn" onclick="delAr(${i})">Sil</button></div></div>`;
     }).join('');
   }catch(e){list.innerHTML='<p class="emp">Yüklenemedi.</p>';}
 }
@@ -241,7 +270,6 @@ function cs(tel,btn){navigator.clipboard.writeText(tel).then(()=>{const o=btn.te
 function cp(id){navigator.clipboard.writeText(document.getElementById(id).value).then(()=>toast('Kopyalandı!','s'));}
 function toast(m,t){const el=document.getElementById('toast');el.textContent=m;el.className='toast '+(t||'s');el.style.display='block';setTimeout(()=>el.style.display='none',2500);}
 
-// Sayfa açılınca paylaşılan veriyi göster
 (async()=>{
   const wrap=document.getElementById('loadingWrap');
   wrap.style.display='block';
@@ -251,11 +279,7 @@ function toast(m,t){const el=document.getElementById('toast');el.textContent=m;e
     if(d.current&&d.current.rows&&d.current.rows.length){
       const sv=document.getElementById('sharedView');
       const rows=d.current.rows;
-      const tip=rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
-      const dis=rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
-      const ecz=rows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
-      sv.innerHTML=`<div class="shared-banner">${d.current.tarih} tarihli liste — ${rows.length} katılımcı</div><div class="stats" style="margin-bottom:12px;"><div class="sc"><p class="sc-n">${rows.length}</p><p class="sc-l">Toplam kayıt</p></div><div class="sc"><p class="sc-n">${tip}</p><p class="sc-l">Tıp doktoru</p></div><div class="sc"><p class="sc-n">${dis+ecz}</p><p class="sc-l">Diş hek. / Ecz.</p></div></div><div id="sv-cards"></div>`;
-      document.getElementById('sv-cards').innerHTML=mkCards(rows);
+      sv.innerHTML=`<div class="shared-banner">${d.current.tarih} tarihli kaydedilmiş liste — ${rows.length} katılımcı</div>`+buildStats(rows)+mkCards(rows);
       sv.style.display='block';
     }
   }catch(e){wrap.style.display='none';}
