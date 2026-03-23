@@ -283,7 +283,7 @@ function toast(m,t){const el=document.getElementById('toast');el.textContent=m;e
       const sv=document.getElementById('sharedView');
       const rows=d.current.rows;
       sv.innerHTML=`<div class="shared-banner">${d.current.tarih} tarihli kaydedilmiş liste — ${rows.length} katılımcı</div>`+buildStats(rows)+mkCards(rows)+`<div style="margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><p style="font-size:13px;font-weight:500;color:#1B2C48">Davet mesajı</p><button style="font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(27,44,72,.18);color:#1B2C48;border-radius:6px;cursor:pointer" onclick="navigator.clipboard.writeText(document.getElementById('sv-msg').value).then(()=>toast('Kopya landı!','s'))">Kopyala</button></div><textarea id="sv-msg" style="width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px solid rgba(27,44,72,.12);border-radius:8px;padding:10px;resize:vertical;color:#1B2C48;font-family:inherit" rows="10">${DAVET}</textarea></div>`;
-      sv.style.display='block';
+      sv.style.display='block';document.getElementById('dz').style.display='none';
     }
   }catch(e){wrap.style.display='none';}
 })();
