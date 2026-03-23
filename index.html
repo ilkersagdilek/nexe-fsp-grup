@@ -189,7 +189,7 @@ function mkCards(rows){
 function parse(txt){
   const lines=txt.trim().split('\n');
   const h=lines[0].split(',').map(x=>x.trim().replace(/^\uFEFF/,''));
-  const ii=h.findIndex(x=>x.toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
+  const ii=h.findIndex(x=>x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
   const it=h.findIndex(x=>x.toLowerCase().includes('telefon')||x.toLowerCase().includes('tel'));
   const im=h.findIndex(x=>x.toLowerCase().includes('meslek'));
   const ia=h.findIndex(x=>x.toLowerCase().includes('almanca')||x.toLowerCase().includes('seviye'));
