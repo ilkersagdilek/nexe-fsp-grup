@@ -10,9 +10,9 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f0f0;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:16px;}
-.app{background:#1B2C48;border-radius:14px;overflow:hidden;width:100%;max-width:560px;box-shadow:0 4px 24px rgba(0,0,0,0.18);}
+.app{background:#1B2C48;border-radius:14px;overflow:hidden;width:100%;max-width:580px;box-shadow:0 4px 24px rgba(0,0,0,0.18);}
 .app-header{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(42,183,177,0.2);}
-.app-header img{width:36px;height:36px;border-radius:8px;}
+.app-header img{width:36px;height:36px;border-radius:8px;object-fit:cover;}
 .app-header-title{font-size:15px;font-weight:600;color:#FFFFF0;}
 .app-header-sub{font-size:11px;color:rgba(255,255,240,0.45);margin-top:2px;}
 .tab-bar{display:flex;padding:0 20px;border-bottom:1px solid rgba(42,183,177,0.15);}
@@ -29,9 +29,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sc-l{font-size:11px;color:rgba(255,255,240,0.55);margin-top:4px;}
 .info{background:rgba(107,91,149,0.1);border:0.5px solid rgba(107,91,149,0.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:#6B5B95;line-height:1.5;}
 .pc{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;margin-bottom:6px;background:white;}
+.pc-left{display:flex;align-items:center;gap:10px;}
 .pn{font-size:12px;color:rgba(27,44,72,0.3);min-width:20px;}
 .pm{font-size:14px;font-weight:500;color:#1B2C48;}
-.pt{font-size:12px;color:rgba(27,44,72,0.45);font-family:monospace;margin-top:2px;}
+.pt{font-size:12px;color:rgba(27,44,72,0.45);font-family:monospace;margin-top:1px;}
+.pa{display:inline-block;font-size:11px;background:rgba(42,183,177,0.12);color:#0f6e56;border-radius:4px;padding:1px 6px;margin-top:3px;}
 .bc{font-size:12px;padding:5px 12px;background:transparent;border:0.5px solid rgba(42,183,177,0.4);color:#2AB7B1;border-radius:6px;cursor:pointer;white-space:nowrap;}
 .bc:hover{background:rgba(42,183,177,0.08);}
 .bc.ok{color:#1a9e97;border-color:#1a9e97;}
@@ -39,27 +41,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .hrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .bs{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(27,44,72,0.18);color:#1B2C48;border-radius:6px;cursor:pointer;}
 textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px solid rgba(27,44,72,0.12);border-radius:8px;padding:10px;resize:vertical;color:#1B2C48;font-family:inherit;}
+.btn-row{display:flex;justify-content:flex-end;gap:10px;margin-top:4px;}
 .ba{font-size:13px;padding:9px 20px;background:#2AB7B1;border:none;color:#1B2C48;font-weight:600;border-radius:8px;cursor:pointer;}
 .ba:hover{background:#24a39e;}
-.ai{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;margin-bottom:8px;cursor:pointer;background:white;}
-.ai:hover{border-color:#2AB7B1;}
+.ba.sb{background:transparent;border:0.5px solid rgba(27,44,72,0.2);color:#1B2C48;}
+.ba.sb:hover{background:rgba(27,44,72,0.05);}
+.ai{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;margin-bottom:8px;background:white;}
+.ai-left{flex:1;cursor:pointer;}
 .at{font-size:14px;font-weight:500;color:#1B2C48;}
 .am{font-size:12px;color:rgba(27,44,72,0.45);margin-top:3px;}
+.ai-btns{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.del-btn{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(220,53,69,0.3);color:#dc3545;border-radius:6px;cursor:pointer;}
+.del-btn:hover{background:rgba(220,53,69,0.06);}
 .emp{font-size:14px;color:rgba(27,44,72,0.35);text-align:center;padding:2rem 0;}
-.toast{background:#1B2C48;color:#2AB7B1;border:0.5px solid #2AB7B1;padding:8px 16px;border-radius:8px;font-size:13px;text-align:center;margin-top:12px;display:none;}
+.toast{padding:8px 16px;border-radius:8px;font-size:13px;text-align:center;margin-top:12px;display:none;}
+.toast.s{background:#1B2C48;color:#2AB7B1;border:0.5px solid #2AB7B1;}
+.toast.e{background:#fff0f0;color:#dc3545;border:0.5px solid rgba(220,53,69,0.3);}
+.loading{text-align:center;padding:16px;color:rgba(27,44,72,0.4);font-size:13px;}
 .bclose{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(107,91,149,0.3);color:#6B5B95;border-radius:6px;cursor:pointer;}
+.shared-banner{background:rgba(42,183,177,0.08);border:0.5px solid rgba(42,183,177,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#0f6e56;}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="app-header">
-    <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="border-radius:8px;flex-shrink:0;">
-    <circle cx="18" cy="18" r="18" fill="#4CAF50"/>
-    <path d="M18 2C9.163 2 2 9.163 2 18c0 2.917.744 5.657 2.05 8.044L2 34l8.196-2.013A15.93 15.93 0 0018 34c8.837 0 16-7.163 16-16S26.837 2 18 2z" fill="#43A047"/>
-    <line x1="11" y1="11" x2="25" y2="25" stroke="#1B2C48" stroke-width="4.5" stroke-linecap="round"/>
-    <line x1="25" y1="11" x2="11" y2="25" stroke="#1B2C48" stroke-width="4.5" stroke-linecap="round"/>
-    <circle cx="18" cy="18" r="3" fill="#2AB7B1"/>
-  </svg>
+    <img src="/logo.png" alt="" onerror="this.style.display='none'">
     <div>
       <div class="app-header-title">NEXE FSP — Grup Hazırlayıcı</div>
       <div class="app-header-sub">Haftalık sunum katılımcı yönetimi</div>
@@ -71,6 +77,8 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
   </div>
   <div class="body">
     <div id="bh" class="sec active">
+      <div id="loadingWrap" class="loading" style="display:none">Yükleniyor...</div>
+      <div id="sharedView" style="display:none"></div>
       <div class="dz" id="dz" onclick="document.getElementById('fi').click()">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p>CSV dosyasını buraya sürükle veya tıkla</p>
@@ -84,8 +92,9 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
           <div class="hrow"><p class="lbl">Davet mesajı</p><button class="bs" onclick="cp('msg')">Kopyala</button></div>
           <textarea id="msg" rows="10"></textarea>
         </div>
-        <div style="display:flex;justify-content:flex-end;">
-          <button class="ba" onclick="arch()">Arşive gönder</button>
+        <div class="btn-row">
+          <button class="ba sb" onclick="archiveCurrent(this)">Arşive gönder</button>
+          <button class="ba" onclick="saveCurrent(this)">Kaydet ve Paylaş</button>
         </div>
       </div>
     </div>
@@ -109,64 +118,148 @@ Tıp Doktorları, Diş Hekimleri ve Eczacılar için Almanya'da devlet destekli 
 
 Yarın akşam görüşmek üzere.`;
 
-const KEY='nexe_fsp_arsiv';
 let cR=[],cF='';
-function showTab(id,btn){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');if(id==='ar')renderAr();}
+
+async function apiGet(){
+  const r=await fetch('/api/data');
+  if(!r.ok)throw new Error('API hatası');
+  return r.json();
+}
+async function apiPut(data,sha){
+  const r=await fetch('/api/data',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({data,sha})});
+  if(!r.ok)throw new Error('Kaydetme hatası');
+  return r.json();
+}
+
+function showTab(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');btn.classList.add('active');
+  if(id==='ar')renderAr();
+}
+
 const dz=document.getElementById('dz'),fi=document.getElementById('fi');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#2AB7B1';});
 dz.addEventListener('dragleave',()=>dz.style.borderColor='');
 dz.addEventListener('drop',e=>{e.preventDefault();dz.style.borderColor='';const f=e.dataTransfer.files[0];if(f)load(f);});
 fi.addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
 function load(f){cF=f.name;const r=new FileReader();r.onload=e=>parse(e.target.result);r.readAsText(f,'UTF-8');}
-function ct(t){return t.replace(/\s/g,'').replace(/^00/,'+');}
+function ct(t){return t.replace(/s/g,'').replace(/^00/,'+');}
+
+function mkCards(rows){
+  return rows.map((r,i)=>`<div class="pc"><div class="pc-left"><span class="pn">${i+1}</span><div><p class="pm">${r.isim}</p><p class="pt">${r.tel}</p>${r.almanca?'<span class="pa">'+r.almanca+'</span>':''}</div></div><button class="bc" onclick="cs('${r.tel.replace(/'/g,"\\'")}',this)">Kopyala</button></div>`).join('');
+}
+
 function parse(txt){
   const lines=txt.trim().split('\n');
   const h=lines[0].split(',').map(x=>x.trim().replace(/^\uFEFF/,''));
   const ii=h.findIndex(x=>x.toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
   const it=h.findIndex(x=>x.toLowerCase().includes('telefon')||x.toLowerCase().includes('tel'));
   const im=h.findIndex(x=>x.toLowerCase().includes('meslek'));
-  cR=lines.slice(1).map(l=>{const c=l.split(',').map(x=>x.trim());return{isim:c[ii]||'',tel:ct(c[it]||''),meslek:c[im]||''};}).filter(r=>r.tel&&r.tel.length>5);
+  const ia=h.findIndex(x=>x.toLowerCase().includes('almanca')||x.toLowerCase().includes('seviye'));
+  cR=lines.slice(1).map(l=>{const c=l.split(',').map(x=>x.trim());return{isim:c[ii]||'',tel:ct(c[it]||''),meslek:c[im]||'',almanca:ia>=0?c[ia]||'':''};}).filter(r=>r.tel&&r.tel.length>5);
   const tip=cR.filter(r=>r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip')).length;
   const dis=cR.filter(r=>r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis')).length;
   const ecz=cR.filter(r=>r.meslek.toLowerCase().includes('ecz')).length;
   document.getElementById('stats').innerHTML=`<div class="sc"><p class="sc-n">${cR.length}</p><p class="sc-l">Toplam kayıt</p></div><div class="sc"><p class="sc-n">${tip}</p><p class="sc-l">Tıp doktoru</p></div><div class="sc"><p class="sc-n">${dis+ecz}</p><p class="sc-l">Diş hek. / Ecz.</p></div>`;
-  document.getElementById('cards').innerHTML=`<p class="lbl" style="margin-bottom:10px;">Katılımcılar — sırayla kopyala (${cR.length} kişi)</p>`+cR.map((r,i)=>`<div class="pc"><div style="display:flex;align-items:center;gap:10px;"><span class="pn">${i+1}</span><div><p class="pm">${r.isim}</p><p class="pt">${r.tel}</p></div></div><button class="bc" onclick="cs('${r.tel}',this)">Kopyala</button></div>`).join('');
+  document.getElementById('cards').innerHTML=`<p class="lbl" style="margin-bottom:10px;">Katılımcılar — sırayla kopyala (${cR.length} kişi)</p>`+mkCards(cR);
   document.getElementById('msg').value=DAVET;
   document.getElementById('res').style.display='block';
   dz.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><p style="color:#2AB7B1;margin:6px 0 0;">${cR.length} kayıt yüklendi</p><p style="font-size:12px;color:rgba(27,44,72,0.4);margin:3px 0 0;">Yeni dosya için tıkla</p><input type="file" id="fi2" accept=".csv" style="display:none">`;
   document.getElementById('fi2').addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
   dz.onclick=()=>document.getElementById('fi2').click();
 }
-function arch(){
+
+async function saveCurrent(btn){
   if(!cR.length)return;
-  const ar=JSON.parse(localStorage.getItem(KEY)||'[]');
-  ar.unshift({tarih:new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),dosya:cF,rows:cR});
-  localStorage.setItem(KEY,JSON.stringify(ar));
-  toast('Arşive gönderildi!');cR=[];
-  document.getElementById('res').style.display='none';
-  dz.innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>CSV dosyasını buraya sürükle veya tıkla</p><input type="file" id="fi3" accept=".csv" style="display:none">`;
-  document.getElementById('fi3').addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
-  dz.onclick=()=>document.getElementById('fi3').click();
+  btn.textContent='Kaydediliyor...';btn.disabled=true;
+  try{
+    const d=await apiGet();
+    d.current={tarih:new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR};
+    await apiPut(d,d._sha);
+    toast('Kaydedildi — herkes görebilir','s');
+  }catch(e){toast('Hata: '+e.message,'e');}
+  btn.textContent='Kaydet ve Paylaş';btn.disabled=false;
 }
-function renderAr(){
-  const ar=JSON.parse(localStorage.getItem(KEY)||'[]');
+
+async function archiveCurrent(btn){
+  if(!cR.length)return;
+  btn.textContent='Gönderiliyor...';btn.disabled=true;
+  try{
+    const d=await apiGet();
+    d.archive=d.archive||[];
+    d.archive.unshift({tarih:new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR});
+    d.current=null;
+    await apiPut(d,d._sha);
+    toast('Arşive gönderildi!','s');
+    cR=[];
+    document.getElementById('res').style.display='none';
+    dz.innerHTML=`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2AB7B1" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>CSV dosyasını buraya sürükle veya tıkla</p><input type="file" id="fi3" accept=".csv" style="display:none">`;
+    document.getElementById('fi3').addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
+    dz.onclick=()=>document.getElementById('fi3').click();
+  }catch(e){toast('Hata: '+e.message,'e');}
+  btn.textContent='Arşive gönder';btn.disabled=false;
+}
+
+async function renderAr(){
+  const list=document.getElementById('al');
+  list.innerHTML='<p class="loading">Yükleniyor...</p>';
   document.getElementById('ad').style.display='none';
-  if(!ar.length){document.getElementById('al').innerHTML='<p class="emp">Henüz arşivlenmiş sunum yok.</p>';return;}
-  document.getElementById('al').innerHTML=ar.map((a,i)=>{
-    const tip=a.rows.filter(r=>r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip')).length;
-    const dis=a.rows.filter(r=>r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis')).length;
-    const ecz=a.rows.filter(r=>r.meslek.toLowerCase().includes('ecz')).length;
-    return`<div class="ai" onclick="showD(${i})"><div><p class="at">${a.tarih} sunumu</p><p class="am">${a.rows.length} katılımcı · ${tip} tıp · ${dis} diş · ${ecz} ecz.</p></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(27,44,72,0.25)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>`;
-  }).join('');
+  try{
+    const d=await apiGet();
+    const ar=d.archive||[];
+    if(!ar.length){list.innerHTML='<p class="emp">Henüz arşivlenmiş sunum yok.</p>';return;}
+    list.innerHTML=ar.map((a,i)=>{
+      const tip=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
+      const dis=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
+      const ecz=a.rows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
+      return`<div class="ai"><div class="ai-left" onclick="showD(${i})"><p class="at">${a.tarih} sunumu</p><p class="am">${a.rows.length} katılımcı · ${tip} tıp · ${dis} diş · ${ecz} ecz.</p></div><div class="ai-btns"><svg onclick="showD(${i})" style="cursor:pointer;opacity:0.25" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><button class="del-btn" onclick="delAr(${i})">Sil</button></div></div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<p class="emp">Yüklenemedi.</p>';}
 }
-function showD(i){
-  const a=JSON.parse(localStorage.getItem(KEY)||'[]')[i];
-  const d=document.getElementById('ad');d.style.display='block';
-  d.innerHTML=`<div class="hrow" style="margin-bottom:12px;"><p style="font-size:14px;font-weight:500;color:#1B2C48;">${a.tarih} — ${a.rows.length} katılımcı</p><button class="bclose" onclick="document.getElementById('ad').style.display='none'">Kapat</button></div>`+a.rows.map((r,i)=>`<div class="pc"><div style="display:flex;align-items:center;gap:10px;"><span class="pn">${i+1}</span><div><p class="pm">${r.isim}</p><p class="pt">${r.tel}</p></div></div><button class="bc" onclick="cs('${r.tel}',this)">Kopyala</button></div>`).join('');
+
+async function delAr(idx){
+  if(!confirm('Bu kayıt silinsin mi?'))return;
+  try{
+    const d=await apiGet();
+    d.archive.splice(idx,1);
+    await apiPut(d,d._sha);
+    toast('Silindi.','s');renderAr();
+  }catch(e){toast('Hata: '+e.message,'e');}
 }
+
+async function showD(i){
+  try{
+    const d=await apiGet();
+    const a=d.archive[i];
+    const det=document.getElementById('ad');det.style.display='block';
+    det.innerHTML=`<div class="hrow" style="margin-bottom:12px;"><p style="font-size:14px;font-weight:500;color:#1B2C48;">${a.tarih} — ${a.rows.length} katılımcı</p><button class="bclose" onclick="document.getElementById('ad').style.display='none'">Kapat</button></div>`+mkCards(a.rows);
+  }catch(e){}
+}
+
 function cs(tel,btn){navigator.clipboard.writeText(tel).then(()=>{const o=btn.textContent;btn.textContent='Kopyalandı!';btn.classList.add('ok');setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1200);});}
-function cp(id){navigator.clipboard.writeText(document.getElementById(id).value).then(()=>toast('Kopyalandı!'));}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800);}
+function cp(id){navigator.clipboard.writeText(document.getElementById(id).value).then(()=>toast('Kopyalandı!','s'));}
+function toast(m,t){const el=document.getElementById('toast');el.textContent=m;el.className='toast '+(t||'s');el.style.display='block';setTimeout(()=>el.style.display='none',2500);}
+
+// Sayfa açılınca paylaşılan veriyi göster
+(async()=>{
+  const wrap=document.getElementById('loadingWrap');
+  wrap.style.display='block';
+  try{
+    const d=await apiGet();
+    wrap.style.display='none';
+    if(d.current&&d.current.rows&&d.current.rows.length){
+      const sv=document.getElementById('sharedView');
+      const rows=d.current.rows;
+      const tip=rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
+      const dis=rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
+      const ecz=rows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
+      sv.innerHTML=`<div class="shared-banner">${d.current.tarih} tarihli liste — ${rows.length} katılımcı</div><div class="stats" style="margin-bottom:12px;"><div class="sc"><p class="sc-n">${rows.length}</p><p class="sc-l">Toplam kayıt</p></div><div class="sc"><p class="sc-n">${tip}</p><p class="sc-l">Tıp doktoru</p></div><div class="sc"><p class="sc-n">${dis+ecz}</p><p class="sc-l">Diş hek. / Ecz.</p></div></div><div id="sv-cards"></div>`;
+      document.getElementById('sv-cards').innerHTML=mkCards(rows);
+      sv.style.display='block';
+    }
+  }catch(e){wrap.style.display='none';}
+})();
 </script>
 </body>
 </html>
