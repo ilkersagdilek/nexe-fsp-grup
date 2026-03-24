@@ -67,8 +67,9 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
 .loading{text-align:center;padding:16px;color:rgba(27,44,72,0.4);font-size:13px;}
 .bclose{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(107,91,149,0.3);color:#6B5B95;border-radius:6px;cursor:pointer;}
 .shared-banner{background:rgba(42,183,177,0.08);border:0.5px solid rgba(42,183,177,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#0f6e56;}
-.ar-stats{display:flex;gap:16px;background:rgba(27,44,72,0.05);border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:rgba(27,44,72,0.65);font-weight:500;}
-.ar-stats span{display:flex;align-items:center;gap:5px;}
+.ar-stats{display:flex;flex-wrap:wrap;gap:6px 14px;background:rgba(27,44,72,0.05);border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:rgba(27,44,72,0.65);font-weight:500;}
+.ar-stats span{display:flex;align-items:center;gap:4px;}
+.ar-stats-div{width:100%;height:0;border-top:0.5px solid rgba(27,44,72,0.08);margin:2px 0;}
 #ar-q{width:100%;font-size:13px;padding:8px 12px 8px 34px;border:0.5px solid rgba(27,44,72,0.15);border-radius:8px;background:white;color:#1B2C48;outline:none;font-family:inherit;}
 #ar-q:focus{border-color:#2AB7B1;}
 .ar-search-wrap{position:relative;margin-bottom:12px;}
@@ -115,7 +116,7 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
       <div id="ar-stats" class="ar-stats" style="display:none;"></div>
       <div class="ar-search-wrap" id="ar-search" style="display:none;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="search" id="ar-q" placeholder="Tarih veya isim ara…" oninput="filterAr(this.value)">
+        <input type="text" id="ar-q" placeholder="Tarih veya isim ara…" oninput="filterAr(this.value)" onkeyup="filterAr(this.value)">
       </div>
       <div id="al"></div>
       <div id="ad" style="display:none;margin-top:12px;"></div>
@@ -253,16 +254,17 @@ function renderArList(items){
     const tip=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
     const dis=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
     const ecz=a.rows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
-    return`<div class="ai"><div class="ai-left" onclick="showD(${i})"><p class="at">${a.tarih} sunumu</p><p class="am">${a.rows.length} katılımcı · ${tip} Tıp · ${dis} Diş · ${ecz} Ecz.</p></div><div class="ai-btns"><svg onclick="showD(${i})" style="cursor:pointer;opacity:0.25" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><button class="del-btn" onclick="delAr(${i})">Sil</button></div></div>`;
+    return`<div class="ai"><div class="ai-left" onclick="showD(${i})"><p class="at">${a.tarih} Sunumu</p><p class="am">${a.rows.length} Katılımcı · ${tip} Tıp · ${dis} Diş · ${ecz} Ecz.</p></div><div class="ai-btns"><svg onclick="showD(${i})" style="cursor:pointer;opacity:0.25" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><button class="del-btn" onclick="delAr(${i})">Sil</button></div></div>`;
   }).join('');
 }
 
 function filterAr(q){
-  if(!q.trim()){renderArList(arData);return;}
-  const lq=q.toLowerCase();
+  const t=q.trim();
+  if(!t){renderArList(arData);return;}
+  const lq=t.toLowerCase();
   renderArList(arData.filter(a=>
-    a.tarih.includes(q)||
-    a.rows.some(r=>(r.isim||'').toLowerCase().includes(lq)||r.tel.includes(q))
+    (a.tarih||'').toLowerCase().includes(lq)||
+    a.rows.some(r=>(r.isim||'').toLowerCase().includes(lq)||(r.tel||'').includes(t))
   ));
 }
 
@@ -279,7 +281,15 @@ async function renderAr(){
     arData=d.archive||[];
     if(!arData.length){list.innerHTML='<p class="emp">Henüz arşivlenmiş sunum yok.</p>';return;}
     const totalP=arData.reduce((s,a)=>s+a.rows.length,0);
-    statsEl.innerHTML=`<span>📋 ${arData.length} sunum</span><span>👥 ${totalP} toplam katılımcı</span>`;
+    const allRows=arData.flatMap(a=>a.rows);
+    const totTip=allRows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
+    const totDis=allRows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
+    const totEcz=allRows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
+    const sevOrder=['Yeni Ba\u015flang\u0131\u00e7','A1','A2','B1','B2','C1','C2'];
+    const sevCount={};
+    allRows.forEach(r=>{const s=r.almanca||'';if(s)sevCount[s]=(sevCount[s]||0)+1;});
+    const sevStr=sevOrder.filter(s=>sevCount[s]).map(s=>`<span>${s}: ${sevCount[s]}</span>`).join('');
+    statsEl.innerHTML=`<span>📋 ${arData.length} Sunum</span><span>👥 ${totalP} Toplam Katılımcı</span><div class="ar-stats-div"></div><span>🩺 ${totTip} Tıp Doktoru</span><span>🦷 ${totDis} Diş Hekimi</span><span>💊 ${totEcz} Eczacı</span>${sevStr?'<div class="ar-stats-div"></div>'+sevStr:''}`;
     statsEl.style.display='flex';
     searchEl.style.display='block';
     document.getElementById('ar-q').value='';
