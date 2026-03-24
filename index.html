@@ -138,7 +138,15 @@ Tıp Doktorları, Diş Hekimleri ve Eczacılar için Almanya'da devlet destekli 
 
 Yarın akşam görüşmek üzere.`;
 
-let cR=[],cF='';
+let cR=[],cF='',cDate='';
+
+function extractPresentationDate(text){
+  if(!text)return '';
+  const months={'ocak':'01','şubat':'02','mart':'03','nisan':'04','mayıs':'05','haziran':'06','temmuz':'07','ağustos':'08','eylül':'09','ekim':'10','kasım':'11','aralık':'12'};
+  const m=(text||'').match(/(\d{1,2})\s+(ocak|şubat|mart|nisan|mayıs|haziran|temmuz|ağustos|eylül|ekim|kasım|aralık)\s+(\d{4})/i);
+  if(!m)return '';
+  return m[1].padStart(2,'0')+'.'+months[m[2].toLowerCase()]+'.'+m[3];
+}
 
 function titleCase(s){
   return (s||'').toLowerCase().replace(/(?:^|\s|-)\S/g,c=>c.toUpperCase());
@@ -198,6 +206,8 @@ function mkCards(rows){
 
 function parse(txt){
   const lines=txt.trim().split('\n').map(l=>l.trim()).filter(l=>l);
+  // Sunumun gerçek tarihini dosya adından veya ilk satırdan çek
+  cDate=extractPresentationDate(cF)||extractPresentationDate(lines[0])||new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'});
   // Ayırıcıyı otomatik algıla: ; mi , mi?
   const sep=(lines[0].split(';').length>lines[0].split(',').length)?';':',';
   // Başlık satırını bul (ilk 5 satır içinde isim/telefon/meslek geçen satır)
@@ -225,7 +235,7 @@ async function saveCurrent(btn){
   btn.textContent='Kaydediliyor...';btn.disabled=true;
   try{
     const d=await apiGet();
-    d.current={tarih:new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR};
+    d.current={tarih:cDate||new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR};
     await apiPut(d,d._sha);
     toast('Kaydedildi — herkes görebilir','s');
     btn.style.display='none';
@@ -239,7 +249,7 @@ async function archiveCurrent(btn){
   try{
     const d=await apiGet();
     d.archive=d.archive||[];
-    d.archive.unshift({tarih:new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR});
+    d.archive.unshift({tarih:cDate||new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR});
     d.current=null;
     await apiPut(d,d._sha);
     toast('Arşive gönderildi!','s');
@@ -290,6 +300,7 @@ async function renderAr(){
     if(!arData.length){list.innerHTML='<p class="emp">Henüz arşivlenmiş sunum yok.</p>';return;}
     const totalP=arData.reduce((s,a)=>s+a.rows.length,0);
     const allRows=arData.flatMap(a=>a.rows);
+    const uniqueCount=new Set(allRows.map(r=>(r.tel||'').replace(/\D/g,'')).filter(t=>t.length>5)).size;
     const totTip=allRows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
     const totDis=allRows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
     const totEcz=allRows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
@@ -297,7 +308,7 @@ async function renderAr(){
     const sevCount={};
     allRows.forEach(r=>{const s=r.almanca||'';if(s)sevCount[s]=(sevCount[s]||0)+1;});
     const sevStr=sevOrder.filter(s=>sevCount[s]).map(s=>`<span>${s}: ${sevCount[s]}</span>`).join('');
-    statsEl.innerHTML=`<span>📋 ${arData.length} Sunum</span><span>👥 ${totalP} Toplam Katılımcı</span><div class="ar-stats-div"></div><span>🩺 ${totTip} Tıp Doktoru</span><span>🦷 ${totDis} Diş Hekimi</span><span>💊 ${totEcz} Eczacı</span>${sevStr?'<div class="ar-stats-div"></div>'+sevStr:''}`;
+    statsEl.innerHTML=`<span>📋 ${arData.length} Sunum</span><span>👥 ${totalP} Toplam Katılım</span><span>👤 ${uniqueCount} Benzersiz Kişi</span><div class="ar-stats-div"></div><span>🩺 ${totTip} Tıp Doktoru</span><span>🦷 ${totDis} Diş Hekimi</span><span>💊 ${totEcz} Eczacı</span>${sevStr?'<div class="ar-stats-div"></div>'+sevStr:''}`;
     statsEl.style.display='flex';
     searchEl.style.display='block';
     document.getElementById('ar-q').value='';
