@@ -1,4 +1,4 @@
-const CACHE = 'nexe-fsp-v1';
+const CACHE = 'nexe-fsp-v2';
 const SHELL = ['/', '/index.html', '/logo.png', '/manifest.json'];
 
 self.addEventListener('install', e => {
