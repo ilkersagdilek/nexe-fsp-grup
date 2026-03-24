@@ -19,8 +19,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .app-header-title{font-size:15px;font-weight:700;color:#FFFFF0;font-family:'Poppins',sans-serif;letter-spacing:0.2px;}
 .app-header-sub{font-size:11px;color:rgba(255,255,240,0.45);margin-top:2px;}
 .tab-bar{display:flex;padding:0 20px;border-bottom:1px solid rgba(42,183,177,0.15);}
-.tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;padding:12px 16px;font-size:13px;font-weight:500;color:rgba(255,255,240,0.45);cursor:pointer;}
+.tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;padding:12px 16px;font-size:13px;font-weight:600;color:rgba(255,255,240,0.55);cursor:pointer;font-family:'Poppins',sans-serif;}
 .tab-btn.active{color:#2AB7B1;border-bottom:2px solid #2AB7B1;}
+.tab-btn:not(.active):hover{color:rgba(255,255,240,0.8);}
 .body{background:#FFFFF0;padding:20px;}
 .sec{display:none;}.sec.active{display:block;}
 .dz{border:1.5px dashed rgba(42,183,177,0.4);border-radius:10px;padding:24px;text-align:center;cursor:pointer;margin-bottom:16px;}
@@ -67,8 +68,9 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
 .loading{text-align:center;padding:16px;color:rgba(27,44,72,0.4);font-size:13px;}
 .bclose{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(107,91,149,0.3);color:#6B5B95;border-radius:6px;cursor:pointer;}
 .shared-banner{background:rgba(42,183,177,0.08);border:0.5px solid rgba(42,183,177,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#0f6e56;}
-.ar-stats{display:flex;flex-wrap:wrap;gap:6px 14px;background:rgba(27,44,72,0.05);border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:rgba(27,44,72,0.65);font-weight:500;}
-.ar-stats span{display:flex;align-items:center;gap:4px;}
+.ar-stats{display:flex;flex-wrap:wrap;gap:5px 10px;background:rgba(27,44,72,0.05);border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:rgba(27,44,72,0.65);font-weight:500;}
+.ar-stats span{display:flex;align-items:center;gap:3px;white-space:nowrap;}
+.ar-stats strong{font-weight:700;color:rgba(27,44,72,0.85);}
 .ar-stats-div{width:100%;height:0;border-top:0.5px solid rgba(27,44,72,0.08);margin:2px 0;}
 #ar-q{width:100%;font-size:13px;padding:8px 12px 8px 34px;border:0.5px solid rgba(27,44,72,0.15);border-radius:8px;background:white;color:#1B2C48;outline:none;font-family:inherit;}
 #ar-q:focus{border-color:#2AB7B1;}
@@ -314,7 +316,7 @@ async function renderAr(){
     const sevCount={};
     uniqueRows.forEach(r=>{const s=r.almanca||'';if(s)sevCount[s]=(sevCount[s]||0)+1;});
     const sevStr=sevOrder.filter(s=>sevCount[s]).map(s=>`<span style="color:${sevColors[s]||'#888'};font-weight:600">${s}: <strong>${sevCount[s]}</strong></span>`).join('');
-    statsEl.innerHTML=`<span>📋 <strong>${arData.length}</strong> Sunum</span><span>👥 <strong>${totalP}</strong> Toplam Katılım</span><span>👤 <strong>${uniqueCount}</strong> Benzersiz Kişi</span><div class="ar-stats-div"></div><span>🩺 <strong>${totTip}</strong> Tıp Doktoru</span><span>🦷 <strong>${totDis}</strong> Diş Hekimi</span><span>💊 <strong>${totEcz}</strong> Eczacı</span>${sevStr?'<div class="ar-stats-div"></div>'+sevStr:''}`;
+    statsEl.innerHTML=`<span style="min-width:calc(50% - 10px)">📋 <strong>${arData.length}</strong> Sunum</span><span style="min-width:calc(50% - 10px)">👥 <strong>${totalP}</strong> Toplam Katılım</span><span style="min-width:calc(50% - 10px)">👤 <strong>${uniqueCount}</strong> Benzersiz Kişi</span><div class="ar-stats-div"></div><span style="min-width:calc(33% - 10px)">🩺 <strong>${totTip}</strong> Tıp</span><span style="min-width:calc(33% - 10px)">🦷 <strong>${totDis}</strong> Diş</span><span style="min-width:calc(33% - 10px)">💊 <strong>${totEcz}</strong> Ecz.</span>${sevStr?'<div class="ar-stats-div"></div>'+sevStr:''}`;
     statsEl.style.display='flex';
     searchEl.style.display='block';
     document.getElementById('ar-q').value='';
