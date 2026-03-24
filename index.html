@@ -19,7 +19,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .app-header-title{font-size:15px;font-weight:700;color:#FFFFF0;font-family:'Poppins',sans-serif;letter-spacing:0.2px;}
 .app-header-sub{font-size:11px;color:rgba(255,255,240,0.45);margin-top:2px;}
 .tab-bar{display:flex;padding:0 20px;border-bottom:1px solid rgba(42,183,177,0.15);}
-.tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;padding:12px 16px;font-size:13px;font-weight:600;color:rgba(255,255,240,0.72);cursor:pointer;font-family:'Poppins',sans-serif;}
+.tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;padding:12px 16px;font-size:13px;font-weight:600;color:#FFFFF0;cursor:pointer;font-family:'Poppins',sans-serif;}
 .tab-btn.active{color:#2AB7B1;border-bottom:2px solid #2AB7B1;}
 .tab-btn:not(.active):hover{color:rgba(255,255,240,0.8);}
 .body{background:#FFFFF0;padding:20px;}
@@ -316,7 +316,7 @@ async function renderAr(){
     const sevCount={};
     uniqueRows.forEach(r=>{const s=r.almanca||'';if(s)sevCount[s]=(sevCount[s]||0)+1;});
     const sevStr=sevOrder.filter(s=>sevCount[s]).map(s=>`<span style="color:${sevColors[s]||'#888'};font-weight:600">${s}: <strong>${sevCount[s]}</strong></span>`).join('');
-    statsEl.innerHTML=`<span>📋 <strong>${arData.length}</strong> Sunum</span><span>👥 <strong>${totalP}</strong> Toplam Katılım</span><span>👤 <strong>${uniqueCount}</strong> Benzersiz Kişi</span><div class="ar-stats-div"></div><span>🩺 <strong>${totTip}</strong> Tıp Doktoru</span><span>🦷 <strong>${totDis}</strong> Diş Hekimi</span><span>💊 <strong>${totEcz}</strong> Eczacı</span>${sevStr?'<div class="ar-stats-div"></div>'+sevStr:''}`;
+    statsEl.innerHTML=`<span>📋 <strong>${arData.length}</strong> Sunum</span><span>👥 <strong>${totalP}</strong> Toplam Kişi</span><span>👤 <strong>${uniqueCount}</strong> Tekil Kişi</span><div class="ar-stats-div"></div><span>🩺 <strong>${totTip}</strong> Tıp Doktoru</span><span>🦷 <strong>${totDis}</strong> Diş Hekimi</span><span>💊 <strong>${totEcz}</strong> Eczacı</span>${sevStr?'<div class="ar-stats-div"></div>'+sevStr:''}`;
     statsEl.style.display='flex';
     searchEl.style.display='block';
     document.getElementById('ar-q').value='';
