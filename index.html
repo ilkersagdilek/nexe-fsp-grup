@@ -67,6 +67,12 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
 .loading{text-align:center;padding:16px;color:rgba(27,44,72,0.4);font-size:13px;}
 .bclose{font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(107,91,149,0.3);color:#6B5B95;border-radius:6px;cursor:pointer;}
 .shared-banner{background:rgba(42,183,177,0.08);border:0.5px solid rgba(42,183,177,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#0f6e56;}
+.ar-stats{display:flex;gap:16px;background:rgba(27,44,72,0.05);border:0.5px solid rgba(27,44,72,0.1);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:rgba(27,44,72,0.65);font-weight:500;}
+.ar-stats span{display:flex;align-items:center;gap:5px;}
+#ar-q{width:100%;font-size:13px;padding:8px 12px 8px 34px;border:0.5px solid rgba(27,44,72,0.15);border-radius:8px;background:white;color:#1B2C48;outline:none;font-family:inherit;}
+#ar-q:focus{border-color:#2AB7B1;}
+.ar-search-wrap{position:relative;margin-bottom:12px;}
+.ar-search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:0.3;pointer-events:none;}
 </style>
 </head>
 <body>
@@ -106,6 +112,11 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
       </div>
     </div>
     <div id="ar" class="sec">
+      <div id="ar-stats" class="ar-stats" style="display:none;"></div>
+      <div class="ar-search-wrap" id="ar-search" style="display:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="ar-q" placeholder="Tarih veya isim ara…" oninput="filterAr(this.value)">
+      </div>
       <div id="al"></div>
       <div id="ad" style="display:none;margin-top:12px;"></div>
     </div>
@@ -152,23 +163,17 @@ function ct(t){return t.replace(/\s/g,'').replace(/^00/,'+');}
 
 function tcName(s){if(!s)return '';return s.toLowerCase().split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');}
 function buildStats(rows){
-  // Meslekler
   const tip=rows.filter(r=>r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip')).length;
   const dis=rows.filter(r=>r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis')).length;
   const ecz=rows.filter(r=>r.meslek.toLowerCase().includes('ecz')).length;
-
-  // Almanca seviyeleri
   const seviyelar=['Yeni Başlangıç','A1','A2','B1','B2','C1','C2'];
   const seviyeCounts={};
   rows.forEach(r=>{
     const s=r.almanca||'Belirtilmemiş';
     seviyeCounts[s]=(seviyeCounts[s]||0)+1;
   });
-  // Sıralı göster
   const seviyeEntries=seviyelar.filter(s=>seviyeCounts[s]).map(s=>[s,seviyeCounts[s]]);
-  // Tanımsız seviyeler
   Object.entries(seviyeCounts).forEach(([k,v])=>{if(!seviyelar.includes(k))seviyeEntries.push([k,v]);});
-
   return `
     <p class="section-lbl">Meslek Grupları</p>
     <div class="stats-grid" style="margin-bottom:14px;">
@@ -198,7 +203,6 @@ function parse(txt){
   const im=h.findIndex(x=>x.toLowerCase().includes('meslek'));
   const ia=h.findIndex(x=>x.toLowerCase().includes('almanca')||x.toLowerCase().includes('seviye'));
   cR=lines.slice(1).map(l=>{const c=l.split(',').map(x=>x.trim());return{isim:c[ii]||'',tel:ct(c[it]||''),meslek:c[im]||'',almanca:ia>=0?c[ia]||'':''};}).filter(r=>r.tel&&r.tel.length>5);
-
   document.getElementById('statsWrap').innerHTML=buildStats(cR);
   document.getElementById('cards').innerHTML=mkCards(cR);
   document.getElementById('msg').value=DAVET;
@@ -239,20 +243,47 @@ async function archiveCurrent(btn){
   btn.textContent='Arşive Gönder';btn.disabled=false;
 }
 
+let arData=[];
+
+function renderArList(items){
+  const list=document.getElementById('al');
+  if(!items.length){list.innerHTML='<p class="emp">Sonuç bulunamadı.</p>';return;}
+  list.innerHTML=items.map(a=>{
+    const i=arData.indexOf(a);
+    const tip=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
+    const dis=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
+    const ecz=a.rows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
+    return`<div class="ai"><div class="ai-left" onclick="showD(${i})"><p class="at">${a.tarih} sunumu</p><p class="am">${a.rows.length} katılımcı · ${tip} Tıp · ${dis} Diş · ${ecz} Ecz.</p></div><div class="ai-btns"><svg onclick="showD(${i})" style="cursor:pointer;opacity:0.25" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><button class="del-btn" onclick="delAr(${i})">Sil</button></div></div>`;
+  }).join('');
+}
+
+function filterAr(q){
+  if(!q.trim()){renderArList(arData);return;}
+  const lq=q.toLowerCase();
+  renderArList(arData.filter(a=>
+    a.tarih.includes(q)||
+    a.rows.some(r=>(r.isim||'').toLowerCase().includes(lq)||r.tel.includes(q))
+  ));
+}
+
 async function renderAr(){
   const list=document.getElementById('al');
+  const statsEl=document.getElementById('ar-stats');
+  const searchEl=document.getElementById('ar-search');
   list.innerHTML='<p class="loading">Yükleniyor...</p>';
   document.getElementById('ad').style.display='none';
+  statsEl.style.display='none';
+  searchEl.style.display='none';
   try{
     const d=await apiGet();
-    const ar=d.archive||[];
-    if(!ar.length){list.innerHTML='<p class="emp">Henüz arşivlenmiş sunum yok.</p>';return;}
-    list.innerHTML=ar.map((a,i)=>{
-      const tip=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
-      const dis=a.rows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
-      const ecz=a.rows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
-      return`<div class="ai"><div class="ai-left" onclick="showD(${i})"><p class="at">${a.tarih} sunumu</p><p class="am">${a.rows.length} katılımcı · ${tip} Tıp · ${dis} Diş · ${ecz} Ecz.</p></div><div class="ai-btns"><svg onclick="showD(${i})" style="cursor:pointer;opacity:0.25" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1B2C48" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><button class="del-btn" onclick="delAr(${i})">Sil</button></div></div>`;
-    }).join('');
+    arData=d.archive||[];
+    if(!arData.length){list.innerHTML='<p class="emp">Henüz arşivlenmiş sunum yok.</p>';return;}
+    const totalP=arData.reduce((s,a)=>s+a.rows.length,0);
+    statsEl.innerHTML=`<span>📋 ${arData.length} sunum</span><span>👥 ${totalP} toplam katılımcı</span>`;
+    statsEl.style.display='flex';
+    searchEl.style.display='block';
+    document.getElementById('ar-q').value='';
+    renderArList(arData);
   }catch(e){list.innerHTML='<p class="emp">Yüklenemedi.</p>';}
 }
 
@@ -278,6 +309,8 @@ async function showD(i){
 function cs(tel,btn){navigator.clipboard.writeText(tel).then(()=>{const o=btn.textContent;btn.textContent='Kopyalandı!';btn.classList.add('ok');setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1200);});}
 function cp(id){navigator.clipboard.writeText(document.getElementById(id).value).then(()=>toast('Kopyalandı!','s'));}
 function toast(m,t){const el=document.getElementById('toast');el.textContent=m;el.className='toast '+(t||'s');el.style.display='block';setTimeout(()=>el.style.display='none',2500);}
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{});}
 
 (async()=>{
   const wrap=document.getElementById('loadingWrap');
