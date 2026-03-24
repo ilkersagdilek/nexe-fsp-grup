@@ -197,13 +197,21 @@ function mkCards(rows){
 }
 
 function parse(txt){
-  const lines=txt.trim().split('\n');
-  const h=lines[0].split(',').map(x=>x.trim().replace(/^\uFEFF/,''));
-  const ii=h.findIndex(x=>x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
+  const lines=txt.trim().split('\n').map(l=>l.trim()).filter(l=>l);
+  // Ayırıcıyı otomatik algıla: ; mi , mi?
+  const sep=(lines[0].split(';').length>lines[0].split(',').length)?';':',';
+  // Başlık satırını bul (ilk 5 satır içinde isim/telefon/meslek geçen satır)
+  let hIdx=0;
+  for(let i=0;i<Math.min(lines.length,5);i++){
+    const cols=lines[i].split(sep).map(x=>x.trim().toLowerCase().replace(/İ/g,'i').replace(/ı/g,'i'));
+    if(cols.some(c=>c.includes('isim')||c.includes('telefon')||c.includes('tel')||c.includes('meslek'))){hIdx=i;break;}
+  }
+  const h=lines[hIdx].split(sep).map(x=>x.trim().replace(/^\uFEFF/,''));
+  const ii=h.findIndex(x=>x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
   const it=h.findIndex(x=>x.toLowerCase().includes('telefon')||x.toLowerCase().includes('tel'));
   const im=h.findIndex(x=>x.toLowerCase().includes('meslek'));
   const ia=h.findIndex(x=>x.toLowerCase().includes('almanca')||x.toLowerCase().includes('seviye'));
-  cR=lines.slice(1).map(l=>{const c=l.split(',').map(x=>x.trim());return{isim:c[ii]||'',tel:ct(c[it]||''),meslek:c[im]||'',almanca:ia>=0?c[ia]||'':''};}).filter(r=>r.tel&&r.tel.length>5);
+  cR=lines.slice(hIdx+1).map(l=>{const c=l.split(sep).map(x=>x.trim());return{isim:c[ii]||'',tel:ct(c[it]||''),meslek:c[im]||'',almanca:ia>=0?c[ia]||'':''};}).filter(r=>r.tel&&r.tel.length>5);
   document.getElementById('statsWrap').innerHTML=buildStats(cR);
   document.getElementById('cards').innerHTML=mkCards(cR);
   document.getElementById('msg').value=DAVET;
