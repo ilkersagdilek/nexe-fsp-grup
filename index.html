@@ -300,15 +300,21 @@ async function renderAr(){
     if(!arData.length){list.innerHTML='<p class="emp">Henüz arşivlenmiş sunum yok.</p>';return;}
     const totalP=arData.reduce((s,a)=>s+a.rows.length,0);
     const allRows=arData.flatMap(a=>a.rows);
-    const uniqueCount=new Set(allRows.map(r=>(r.tel||'').replace(/\D/g,'')).filter(t=>t.length>5)).size;
-    const totTip=allRows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
-    const totDis=allRows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
-    const totEcz=allRows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
+    // Benzersiz kişileri telefon numarasına göre belirle
+    const seenTels=new Set();
+    const uniqueRows=[];
+    allRows.forEach(r=>{const tel=(r.tel||'').replace(/\D/g,'');if(tel.length>5&&!seenTels.has(tel)){seenTels.add(tel);uniqueRows.push(r);}});
+    const uniqueCount=uniqueRows.length;
+    // Meslek ve dil istatistiklerini benzersiz kişiler üzerinden hesapla
+    const totTip=uniqueRows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip'))).length;
+    const totDis=uniqueRows.filter(r=>r.meslek&&(r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis'))).length;
+    const totEcz=uniqueRows.filter(r=>r.meslek&&r.meslek.toLowerCase().includes('ecz')).length;
     const sevOrder=['Yeni Ba\u015flang\u0131\u00e7','A1','A2','B1','B2','C1','C2'];
+    const sevColors={'Yeni Ba\u015flang\u0131\u00e7':'#3B82F6','A1':'#22C55E','A2':'#EAB308','B1':'#F97316','B2':'#EF4444','C1':'#8B5CF6','C2':'#EC4899'};
     const sevCount={};
-    allRows.forEach(r=>{const s=r.almanca||'';if(s)sevCount[s]=(sevCount[s]||0)+1;});
-    const sevStr=sevOrder.filter(s=>sevCount[s]).map(s=>`<span>${s}: ${sevCount[s]}</span>`).join('');
-    statsEl.innerHTML=`<span>📋 ${arData.length} Sunum</span><span>👥 ${totalP} Toplam Katılım</span><span>👤 ${uniqueCount} Benzersiz Kişi</span><div class="ar-stats-div"></div><span>🩺 ${totTip} Tıp Doktoru</span><span>🦷 ${totDis} Diş Hekimi</span><span>💊 ${totEcz} Eczacı</span>${sevStr?'<div class="ar-stats-div"></div>'+sevStr:''}`;
+    uniqueRows.forEach(r=>{const s=r.almanca||'';if(s)sevCount[s]=(sevCount[s]||0)+1;});
+    const sevStr=sevOrder.filter(s=>sevCount[s]).map(s=>`<span style="color:${sevColors[s]||'#888'};font-weight:600">${s}: <strong>${sevCount[s]}</strong></span>`).join('');
+    statsEl.innerHTML=`<span>📋 <strong>${arData.length}</strong> Sunum</span><span>👥 <strong>${totalP}</strong> Toplam Katılım</span><span>👤 <strong>${uniqueCount}</strong> Benzersiz Kişi</span><div class="ar-stats-div"></div><span>🩺 <strong>${totTip}</strong> Tıp Doktoru</span><span>🦷 <strong>${totDis}</strong> Diş Hekimi</span><span>💊 <strong>${totEcz}</strong> Eczacı</span>${sevStr?'<div class="ar-stats-div"></div>'+sevStr:''}`;
     statsEl.style.display='flex';
     searchEl.style.display='block';
     document.getElementById('ar-q').value='';
