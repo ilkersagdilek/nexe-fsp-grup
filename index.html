@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>NEXE FSP — Grup Hazırlayıcı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/logo.png">
 <meta name="theme-color" content="#1B2C48">
@@ -13,7 +16,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .app{background:#1B2C48;border-radius:14px;overflow:hidden;width:100%;max-width:600px;box-shadow:0 4px 24px rgba(0,0,0,0.18);}
 .app-header{padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(42,183,177,0.2);}
 .app-header img{width:36px;height:36px;border-radius:8px;object-fit:cover;}
-.app-header-title{font-size:15px;font-weight:600;color:#FFFFF0;}
+.app-header-title{font-size:15px;font-weight:700;color:#FFFFF0;font-family:'Poppins',sans-serif;letter-spacing:0.2px;}
 .app-header-sub{font-size:11px;color:rgba(255,255,240,0.45);margin-top:2px;}
 .tab-bar{display:flex;padding:0 20px;border-bottom:1px solid rgba(42,183,177,0.15);}
 .tab-btn{background:transparent;border:none;border-bottom:2px solid transparent;padding:12px 16px;font-size:13px;font-weight:500;color:rgba(255,255,240,0.45);cursor:pointer;}
@@ -98,8 +101,8 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
         </div>
       </div>
       <div class="btn-row" id="brow" style="display:none">
-        <button class="ba sb" onclick="archiveCurrent(this)">Arşive gönder</button>
-        <button class="ba" onclick="saveCurrent(this)">Kaydet ve Paylaş</button>
+        <button class="ba sb" onclick="archiveCurrent(this)">Arşive Gönder</button>
+        <button class="ba" id="saveBtn" onclick="saveCurrent(this)">Kaydet ve Paylaş</button>
       </div>
     </div>
     <div id="ar" class="sec">
@@ -149,14 +152,23 @@ function ct(t){return t.replace(/\s/g,'').replace(/^00/,'+');}
 
 function tcName(s){if(!s)return '';return s.toLowerCase().split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');}
 function buildStats(rows){
+  // Meslekler
   const tip=rows.filter(r=>r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip')).length;
   const dis=rows.filter(r=>r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis')).length;
   const ecz=rows.filter(r=>r.meslek.toLowerCase().includes('ecz')).length;
+
+  // Almanca seviyeleri
   const seviyelar=['Yeni Başlangıç','A1','A2','B1','B2','C1','C2'];
   const seviyeCounts={};
-  rows.forEach(r=>{const s=r.almanca||'Belirtilmemiş';seviyeCounts[s]=(seviyeCounts[s]||0)+1;});
+  rows.forEach(r=>{
+    const s=r.almanca||'Belirtilmemiş';
+    seviyeCounts[s]=(seviyeCounts[s]||0)+1;
+  });
+  // Sıralı göster
   const seviyeEntries=seviyelar.filter(s=>seviyeCounts[s]).map(s=>[s,seviyeCounts[s]]);
+  // Tanımsız seviyeler
   Object.entries(seviyeCounts).forEach(([k,v])=>{if(!seviyelar.includes(k))seviyeEntries.push([k,v]);});
+
   return `
     <p class="section-lbl">Meslek Grupları</p>
     <div class="stats-grid" style="margin-bottom:14px;">
@@ -165,7 +177,7 @@ function buildStats(rows){
       <div class="sc"><p class="sc-n">${ecz}</p><p class="sc-l">Eczacı</p></div>
     </div>
     <p class="section-lbl">Almanca Seviyeleri</p>
-    <div class="stats-grid2">${seviyeEntries.map(([s,n])=>`<div class="sc lang"><p class="sc-n">${n}</p><p class="sc-l" style="color:${{'Yeni Başlangıç':'#3B82F6','A1':'#22C55E','A2':'#CA8A04','B1':'#F97316','B2':'#EF4444','C1':'#8B5CF6','C2':'#EC4899'}[s]||'#888'};font-weight:600">${s}</p></div>`).join('')}</div>
+    <div class="stats-grid2">${seviyeEntries.map(([s,n])=>`<div class="sc lang"><p class="sc-n">${n}</p><p class="sc-l" style="color:${{'Yeni Başlangıç':'#3B82F6','A1':'#22C55E','A2':'#EAB308','B1':'#F97316','B2':'#EF4444','C1':'#8B5CF6','C2':'#EC4899'}[s]||'#888'};font-weight:600">${s}</p></div>`).join('')}</div>
   `;
 }
 
@@ -174,18 +186,19 @@ function mkCards(rows){
   return `<p class="lbl" style="margin-bottom:10px">Katılımcılar (${rows.length} kişi)</p>`
     +rows.map((r,i)=>{
       const wa='https://wa.me/'+r.tel.replace(/[^0-9]/g,'');
-      return `<div class="pc"><div class="pc-left"><span class="pn">${i+1}</span><div><p class="pt">${r.tel}</p><p style="font-size:11px;color:rgba(27,44,72,0.4);margin-top:2px">${tcName(r.isim)}</p></div></div><div style="display:flex;gap:6px;align-items:center"><button class="bc" onclick="cs('${r.tel.replace(/'/g,"\\'")}',this)">Kopyala</button><a href="${wa}" target="_blank" style="display:flex;align-items:center;padding:5px 7px;border:0.5px solid rgba(37,211,102,0.4);border-radius:6px;text-decoration:none">${WA}</a></div></div>`;
+      return `<div class="pc"><div class="pc-left"><span class="pn">${i+1}</span><div><a href="tel:${r.tel}" style="text-decoration:none"><p class="pt" style="cursor:pointer">${r.tel}</p></a><p style="font-size:11px;color:rgba(27,44,72,0.4);margin-top:2px">${tcName(r.isim)}</p></div></div><div style="display:flex;gap:6px;align-items:center"><button class="bc" onclick="cs('${r.tel.replace(/'/g,"\\'")}',this)">Kopyala</button><a href="${wa}" target="_blank" style="display:flex;align-items:center;padding:5px 7px;border:0.5px solid rgba(37,211,102,0.4);border-radius:6px;text-decoration:none">${WA}</a></div></div>`;
     }).join('');
 }
 
 function parse(txt){
   const lines=txt.trim().split('\n');
   const h=lines[0].split(',').map(x=>x.trim().replace(/^\uFEFF/,''));
-  const ii=h.findIndex(x=>x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
+  const ii=h.findIndex(x=>x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
   const it=h.findIndex(x=>x.toLowerCase().includes('telefon')||x.toLowerCase().includes('tel'));
   const im=h.findIndex(x=>x.toLowerCase().includes('meslek'));
   const ia=h.findIndex(x=>x.toLowerCase().includes('almanca')||x.toLowerCase().includes('seviye'));
   cR=lines.slice(1).map(l=>{const c=l.split(',').map(x=>x.trim());return{isim:c[ii]||'',tel:ct(c[it]||''),meslek:c[im]||'',almanca:ia>=0?c[ia]||'':''};}).filter(r=>r.tel&&r.tel.length>5);
+
   document.getElementById('statsWrap').innerHTML=buildStats(cR);
   document.getElementById('cards').innerHTML=mkCards(cR);
   document.getElementById('msg').value=DAVET;
@@ -202,8 +215,9 @@ async function saveCurrent(btn){
     d.current={tarih:new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'}),rows:cR};
     await apiPut(d,d._sha);
     toast('Kaydedildi — herkes görebilir','s');
+    btn.style.display='none';
   }catch(e){toast('Hata: '+e.message,'e');}
-  btn.textContent='Kaydet ve Paylaş';btn.disabled=false;
+  if(btn.style.display!=='none'){btn.textContent='Kaydet ve Paylaş';btn.disabled=false;}
 }
 
 async function archiveCurrent(btn){
@@ -222,7 +236,7 @@ async function archiveCurrent(btn){
     document.getElementById('fi3').addEventListener('change',e=>{if(e.target.files[0])load(e.target.files[0]);});
     dz.onclick=()=>document.getElementById('fi3').click();
   }catch(e){toast('Hata: '+e.message,'e');}
-  btn.textContent='Arşive gönder';btn.disabled=false;
+  btn.textContent='Arşive Gönder';btn.disabled=false;
 }
 
 async function renderAr(){
@@ -276,7 +290,7 @@ function toast(m,t){const el=document.getElementById('toast');el.textContent=m;e
       const rows=d.current.rows;
       cR=rows;
       sv.innerHTML=`<div class="shared-banner">${d.current.tarih} tarihli kaydedilmiş liste — ${rows.length} katılımcı</div>`+buildStats(rows)+mkCards(rows)+`<div style="margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><p style="font-size:13px;font-weight:500;color:#1B2C48">Davet mesajı</p><button style="font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(27,44,72,.18);color:#1B2C48;border-radius:6px;cursor:pointer" onclick="navigator.clipboard.writeText(document.getElementById('sv-msg').value).then(()=>toast('Kopyalandı!','s'))">Kopyala</button></div><textarea id="sv-msg" style="width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px solid rgba(27,44,72,.12);border-radius:8px;padding:10px;resize:vertical;color:#1B2C48;font-family:inherit" rows="10">${DAVET}</textarea></div>`;
-      sv.style.display='block';document.getElementById('dz').style.display='none';document.getElementById('brow').style.display='flex';
+      sv.style.display='block';document.getElementById('dz').style.display='none';document.getElementById('brow').style.display='flex';document.getElementById('saveBtn').style.display='none';
     }
   }catch(e){wrap.style.display='none';}
 })();
