@@ -96,10 +96,10 @@ textarea{width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px
           <div class="hrow"><p class="lbl">Davet mesajı</p><button class="bs" onclick="cp('msg')">Kopyala</button></div>
           <textarea id="msg" rows="10"></textarea>
         </div>
-        <div class="btn-row" id="brow" style="display:none">
-          <button class="ba sb" onclick="archiveCurrent(this)">Arşive gönder</button>
-          <button class="ba" onclick="saveCurrent(this)">Kaydet ve Paylaş</button>
-        </div>
+      </div>
+      <div class="btn-row" id="brow" style="display:none">
+        <button class="ba sb" onclick="archiveCurrent(this)">Arşive gönder</button>
+        <button class="ba" onclick="saveCurrent(this)">Kaydet ve Paylaş</button>
       </div>
     </div>
     <div id="ar" class="sec">
@@ -149,23 +149,14 @@ function ct(t){return t.replace(/\s/g,'').replace(/^00/,'+');}
 
 function tcName(s){if(!s)return '';return s.toLowerCase().split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');}
 function buildStats(rows){
-  // Meslekler
   const tip=rows.filter(r=>r.meslek.toLowerCase().includes('t\u0131p')||r.meslek.toLowerCase().includes('tip')).length;
   const dis=rows.filter(r=>r.meslek.toLowerCase().includes('di\u015f')||r.meslek.toLowerCase().includes('dis')).length;
   const ecz=rows.filter(r=>r.meslek.toLowerCase().includes('ecz')).length;
-
-  // Almanca seviyeleri
   const seviyelar=['Yeni Başlangıç','A1','A2','B1','B2','C1','C2'];
   const seviyeCounts={};
-  rows.forEach(r=>{
-    const s=r.almanca||'Belirtilmemiş';
-    seviyeCounts[s]=(seviyeCounts[s]||0)+1;
-  });
-  // Sıralı göster
+  rows.forEach(r=>{const s=r.almanca||'Belirtilmemiş';seviyeCounts[s]=(seviyeCounts[s]||0)+1;});
   const seviyeEntries=seviyelar.filter(s=>seviyeCounts[s]).map(s=>[s,seviyeCounts[s]]);
-  // Tanımsız seviyeler
   Object.entries(seviyeCounts).forEach(([k,v])=>{if(!seviyelar.includes(k))seviyeEntries.push([k,v]);});
-
   return `
     <p class="section-lbl">Meslek Grupları</p>
     <div class="stats-grid" style="margin-bottom:14px;">
@@ -190,16 +181,16 @@ function mkCards(rows){
 function parse(txt){
   const lines=txt.trim().split('\n');
   const h=lines[0].split(',').map(x=>x.trim().replace(/^\uFEFF/,''));
-  const ii=h.findIndex(x=>x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
+  const ii=h.findIndex(x=>x.replace(/İ/g,'I').replace(/ı/g,'i').toLowerCase().includes('isim')||x.toLowerCase().includes('ad'));
   const it=h.findIndex(x=>x.toLowerCase().includes('telefon')||x.toLowerCase().includes('tel'));
   const im=h.findIndex(x=>x.toLowerCase().includes('meslek'));
   const ia=h.findIndex(x=>x.toLowerCase().includes('almanca')||x.toLowerCase().includes('seviye'));
   cR=lines.slice(1).map(l=>{const c=l.split(',').map(x=>x.trim());return{isim:c[ii]||'',tel:ct(c[it]||''),meslek:c[im]||'',almanca:ia>=0?c[ia]||'':''};}).filter(r=>r.tel&&r.tel.length>5);
-
   document.getElementById('statsWrap').innerHTML=buildStats(cR);
   document.getElementById('cards').innerHTML=mkCards(cR);
   document.getElementById('msg').value=DAVET;
   document.getElementById('res').style.display='block';
+  document.getElementById('brow').style.display='flex';
   dz.style.display='none';
 }
 
@@ -283,8 +274,9 @@ function toast(m,t){const el=document.getElementById('toast');el.textContent=m;e
     if(d.current&&d.current.rows&&d.current.rows.length){
       const sv=document.getElementById('sharedView');
       const rows=d.current.rows;
-      sv.innerHTML=`<div class="shared-banner">${d.current.tarih} tarihli kaydedilmiş liste — ${rows.length} katılımcı</div>`+buildStats(rows)+mkCards(rows)+`<div style="margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><p style="font-size:13px;font-weight:500;color:#1B2C48">Davet mesajı</p><button style="font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(27,44,72,.18);color:#1B2C48;border-radius:6px;cursor:pointer" onclick="navigator.clipboard.writeText(document.getElementById('sv-msg').value).then(()=>toast('Kopya landı!','s'))">Kopyala</button></div><textarea id="sv-msg" style="width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px solid rgba(27,44,72,.12);border-radius:8px;padding:10px;resize:vertical;color:#1B2C48;font-family:inherit" rows="10">${DAVET}</textarea></div>`;
-      sv.style.display='block';document.getElementById('dz').style.display='none';document.getElementById('brow').style.display='flex';document.getElementById('brow').style.display='flex';
+      cR=rows;
+      sv.innerHTML=`<div class="shared-banner">${d.current.tarih} tarihli kaydedilmiş liste — ${rows.length} katılımcı</div>`+buildStats(rows)+mkCards(rows)+`<div style="margin-top:16px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><p style="font-size:13px;font-weight:500;color:#1B2C48">Davet mesajı</p><button style="font-size:12px;padding:4px 10px;background:transparent;border:0.5px solid rgba(27,44,72,.18);color:#1B2C48;border-radius:6px;cursor:pointer" onclick="navigator.clipboard.writeText(document.getElementById('sv-msg').value).then(()=>toast('Kopyalandı!','s'))">Kopyala</button></div><textarea id="sv-msg" style="width:100%;font-size:13px;line-height:1.6;background:white;border:0.5px solid rgba(27,44,72,.12);border-radius:8px;padding:10px;resize:vertical;color:#1B2C48;font-family:inherit" rows="10">${DAVET}</textarea></div>`;
+      sv.style.display='block';document.getElementById('dz').style.display='none';document.getElementById('brow').style.display='flex';
     }
   }catch(e){wrap.style.display='none';}
 })();
